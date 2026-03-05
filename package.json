@@ -1,0 +1,21 @@
+{
+  "name": "taskflow-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TaskFlow - B2B Project Management Tool",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^15.0.7",
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^8.2.2",
+    "jsdom": "^24.1.0",
+    "vitest": "^1.6.0"
+  }
+}

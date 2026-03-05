@@ -1,0 +1,20 @@
+{
+  "name": "taskflow-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "test": "vitest",
+    "db:reset": "rm -f taskflow.db && node -e \"import('./db/connection.js')\""
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.1.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "vitest": "^1.6.0"
+  }
+}
