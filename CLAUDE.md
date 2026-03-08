@@ -133,6 +133,19 @@ cd server && npm run db:reset
 
 Tables: `team_members`, `projects`, `tasks`, `settings`
 
+## Docs Folder
+
+`docs/` contains student-generated artifacts created during lessons — architecture overviews, flow traces, scoping briefs, and feature specs. These artifacts persist across lessons and serve as context for later work.
+
+- `docs/design-system.md` — Formatted copy of the design system for easy reference
+- `docs/frontend-design-comparison/` — Before/after screenshots showing /frontend-design plugin impact
+
+## Available Skills
+
+- `/explore-codebase` — Parallel 3-agent codebase exploration (architecture, tech stack, UI patterns)
+- `/scope-feature` — Feature scoping with affected files, patterns to reuse, complexity estimate
+- `/grill-me` — Spec interview that interrogates you on vision, constraints, acceptance criteria, and variants
+
 ## Running the App
 
 ```bash
