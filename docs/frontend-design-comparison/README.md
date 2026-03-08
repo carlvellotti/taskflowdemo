@@ -9,6 +9,4 @@ This folder contains before/after screenshots showing the difference between bui
 
 These screenshots are referenced in L3 when introducing the design context concept. The comparison demonstrates why design tokens alone produce "technically correct but boring" output, and how the plugin pushes Claude past default conservatism.
 
-## Status
-
-Placeholder — screenshots will be generated during visual QA.
+Both screenshots show the same type of component (an email signup modal) built with identical design system context. The difference is striking — the plugin version makes bold layout choices, uses intentional visual hierarchy, and feels designed rather than assembled.
