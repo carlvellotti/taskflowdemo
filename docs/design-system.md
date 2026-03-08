@@ -1,0 +1,78 @@
+# TaskFlow Design System
+
+This document describes the visual design conventions used throughout the TaskFlow app. All styling uses CSS custom properties defined in `client/src/styles/tokens.css` — never hardcode values.
+
+---
+
+## Brand Colors
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-primary` | `#e63f02` | Primary actions, active nav, brand accent |
+| `--color-primary-hover` | `#cc3800` | Button hover states |
+| `--color-primary-light` | `#fff1ec` | Active nav background, focus rings |
+| `--color-accent` | `#fcc403` | Secondary highlights, medium priority |
+| `--color-accent-light` | `#fff9e0` | Accent backgrounds |
+
+## Neutral Palette
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-bg` | `#fafafa` | Page background |
+| `--color-surface` | `#ffffff` | Cards, sidebar, modals |
+| `--color-surface-hover` | `#f5f5f5` | Hover states on surfaces |
+| `--color-border` | `#e5e7eb` | Card borders, dividers |
+| `--color-border-light` | `#f3f4f6` | Subtle separators |
+| `--color-text` | `#111827` | Primary text |
+| `--color-text-secondary` | `#6b7280` | Secondary labels, descriptions |
+| `--color-text-muted` | `#9ca3af` | Timestamps, metadata |
+
+## Status Colors
+
+| Status | Color | Light bg |
+|--------|-------|----------|
+| Success/Done | `--color-success` (#10b981) | `--color-success-light` |
+| Warning/On-hold | `--color-warning` (#f59e0b) | `--color-warning-light` |
+| Error/Urgent | `--color-error` (#ef4444) | `--color-error-light` |
+| Info/In-progress | `--color-info` (#3b82f6) | `--color-info-light` |
+
+## Priority Colors
+
+| Priority | Token |
+|----------|-------|
+| Urgent | `--color-priority-urgent` (#ef4444) |
+| High | `--color-priority-high` (#f97316) |
+| Medium | `--color-priority-medium` (#fcc403) |
+| Low | `--color-priority-low` (#6b7280) |
+
+## Typography
+
+- **Font:** Outfit (loaded via Google Fonts in `index.html`)
+- **Scale:** `--font-size-xs` (0.75rem) through `--font-size-3xl` (1.875rem)
+- **Weights:** light (300), normal (400), medium (500), semibold (600), bold (700)
+- Headings use `--font-weight-semibold`, body uses `--font-weight-normal`
+
+## Spacing
+
+8-point grid: `--space-1` (0.25rem) through `--space-16` (4rem). Use these tokens for all padding, margins, and gaps.
+
+## Component Patterns
+
+- **Cards:** `background: var(--color-surface)`, `border: 1px solid var(--color-border)`, `border-radius: var(--border-radius-lg)`, `padding: var(--space-6)`
+- **Buttons:** Three variants — `primary` (solid brand color), `secondary` (bordered), `ghost` (transparent)
+- **Badges:** Pill-shaped status/priority indicators using the color map in `Badge.jsx`
+- **Forms:** Label above input, focus state uses `--color-primary` border + `--color-primary-light` ring
+- **Layout:** Fixed sidebar (240px), scrollable main content area
+
+## Shadows
+
+- `--shadow-sm`: Subtle card elevation
+- `--shadow-md`: Dropdowns, popovers
+- `--shadow-lg`: Modals
+
+## Contribution Rules
+
+1. **Use design tokens** — never hardcode `#e63f02`, use `var(--color-primary)`
+2. **Match existing patterns** — look at similar components before building new ones
+3. **Inline styles** — this app uses inline style objects, not CSS modules or styled-components
+4. **Keep it simple** — no external UI libraries. All components are built from scratch.
