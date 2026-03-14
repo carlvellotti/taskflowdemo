@@ -95,7 +95,7 @@ Save to the specified path or default location.
 ## Rules
 
 - Ask questions **one phase at a time**. Never dump all questions at once.
-- Use AskUserQuestion for structured choices where it helps (especially acceptance criteria ranking and variant evaluation).
+- **MANDATORY: Use AskUserQuestion for ALL interview questions.** Every phase must present its questions through the AskUserQuestion tool, not as plain text. Bundle 2-3 questions per phase into a single AskUserQuestion call. This is how the student interacts with the interview — plain text questions without AskUserQuestion are NOT acceptable.
 - **Listen** — the spec reflects THEIR vision, refined by your questions. Don't impose your preferences.
 - Be direct and challenging. "What happens when..." questions should surface real gaps, not softball.
 - The conversation IS the value. The document is the artifact.

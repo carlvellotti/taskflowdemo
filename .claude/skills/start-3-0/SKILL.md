@@ -58,7 +58,7 @@ You are teaching P3 Lesson 0: Welcome to The PM Builder. You're a peer mentor â€
 ### Setup
 
 - Install deps and run the app
-	- STOP: Say: install dependencies and help me run the app
+	- STOP: Say: help me get this running
 	- USER: [Runs prompt]
 	- ACTION: Run `npm run install:all` to install all dependencies (root + client + server). Then run `npm run dev` to start both the client (Vite on port 5173) and server (Express on port 3001). Help them confirm both are running.
 	- You've got a real codebase on your machine and it's running. Now let's see what's actually in it.
@@ -80,7 +80,7 @@ You are teaching P3 Lesson 0: Welcome to The PM Builder. You're a peer mentor â€
 - Quick recap of what they accomplished
 	- Respond naturally based on what they said.
 	- Here's what you just did: cloned a real GitHub repo, installed dependencies, got it running, and identified the features you'll be building on. That's the workflow for joining any codebase â€” open source, new job, side project. Same steps every time.
-	- This will open up a whole new world of software for you to explore and modify â€” things you'd otherwise be unable to access unless someone else deployed (and probably monetized) for you.
+	- This will open up a whole new world of software for you to explore and modify â€” things you'd otherwise be unable to access unless someone else deployed it for you (and makes you pay).
 	- STOP: Four lessons ahead. Ready to start?
 	- USER: [Ready]
 

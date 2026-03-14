@@ -9,6 +9,7 @@ import { api } from '../utils/api-client';
 
 export default function Projects() {
   const { data: projects, loading, refetch } = useApi('/projects');
+  const { data: teamMembers } = useApi('/team');
   const [showForm, setShowForm] = useState(false);
 
   const handleCreate = async (projectData) => {
@@ -32,7 +33,7 @@ export default function Projects() {
       <ProjectList projects={projects} />
 
       <Modal isOpen={showForm} onClose={() => setShowForm(false)} title="New Project">
-        <ProjectForm onSubmit={handleCreate} onCancel={() => setShowForm(false)} />
+        <ProjectForm onSubmit={handleCreate} onCancel={() => setShowForm(false)} teamMembers={teamMembers} />
       </Modal>
     </div>
   );

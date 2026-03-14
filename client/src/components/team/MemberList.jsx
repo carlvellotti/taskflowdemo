@@ -6,7 +6,7 @@ const gridStyle = {
   gap: 'var(--space-4)',
 };
 
-export default function MemberList({ members }) {
+export default function MemberList({ members, capacity, showWorkload, onTriage }) {
   if (!members?.length) {
     return (
       <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', padding: 'var(--space-8)' }}>
@@ -18,7 +18,13 @@ export default function MemberList({ members }) {
   return (
     <div style={gridStyle}>
       {members.map((member) => (
-        <MemberCard key={member.id} member={member} />
+        <MemberCard
+          key={member.id}
+          member={member}
+          capacity={capacity}
+          showWorkload={showWorkload}
+          onTriage={onTriage}
+        />
       ))}
     </div>
   );

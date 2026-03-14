@@ -11,13 +11,22 @@ allowed-tools:
   - Glob
   - Grep
   - Bash
+  - AskUserQuestion
 ---
 
 You are running a feature scoping analysis. The user provides a feature description as input — everything after `/scope-feature` on the command line.
 
 ## Process
 
-**Step 1: Parse the feature description.** Extract the core functionality, key requirements, and any constraints mentioned.
+**Step 1: Parse the feature description and clarify requirements.** Extract the core functionality from the user's description. Then do a quick scan of the relevant parts of the codebase to understand what exists. Based on what you find, use AskUserQuestion to ask 2-4 clarifying questions that would materially change the scope. Focus on questions where the answer affects what you'd build — not obvious or trivial details.
+
+Good clarifying questions target:
+- **Ambiguous scope** — "Does 'overload warnings' mean a visual indicator on each member, or a separate alerts/notification system?"
+- **Build vs. extend** — "Should this be a new page or a section added to the existing Team page?"
+- **Key product decisions** — "What defines 'overloaded'? A fixed hour threshold, relative to team average, or user-configurable?"
+- **V1 boundaries** — "For triage, should V1 support reassigning tasks to other members, or just flagging overloaded members for a PM to handle manually?"
+
+Don't ask questions you can answer from the codebase. Don't ask more than 4. If the user's description is already specific enough, skip straight to analysis.
 
 **Step 2: Analyze the codebase.** Read relevant files to understand:
 
@@ -37,6 +46,12 @@ You are running a feature scoping analysis. The user provides a feature descript
 ## Feature Summary
 {What it does, who it's for, how it fits into the existing app}
 
+## Complexity Assessment
+{Low/Medium/High — with specific justification grounded in the codebase}
+
+## Risks & Dependencies
+{What could go wrong, what depends on what, areas of uncertainty}
+
 ## Affected Files
 {Table: file path, what changes, why}
 
@@ -54,12 +69,6 @@ You are running a feature scoping analysis. The user provides a feature descript
 
 ## Test Plan
 {What to test, which existing test patterns to follow}
-
-## Complexity Assessment
-{Low/Medium/High — with specific justification grounded in the codebase}
-
-## Risks & Dependencies
-{What could go wrong, what depends on what, areas of uncertainty}
 ```
 
 **Step 4: Save to `docs/{feature-name}-scoping.md`** — derive the filename from the feature description using kebab-case.

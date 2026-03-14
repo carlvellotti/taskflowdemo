@@ -38,19 +38,64 @@ You are running a codebase exploration. Your goal is to produce a comprehensive 
 - Identify naming conventions and style patterns (inline styles, CSS modules, etc.)
 - List component patterns that could be reused when building new features
 
-**Step 2: Synthesize results** once all three agents return. Combine their findings into a single document with these sections:
+**Step 2: Synthesize results** once all three agents return. Combine their findings into a single document following the template below.
+
+**IMPORTANT — Two-layer format:** Every major section must have a "How it works" narrative first, followed by a "Full detail" section with technical depth.
+
+The "How it works" layer is written for PMs — people who are technical enough to talk to engineers but don't need file paths or framework names. Focus on **what users can do and how those features actually work**: what happens when a user creates a task, how data is connected, what the screens show, what's broken. Write it like an engineer explaining the app to their PM over lunch — direct, concrete, no metaphors or analogies, no dumbing down. PMs care about user actions, data relationships, feature behavior, and known issues.
+
+The "Full detail" layer is for when someone needs to dig into implementation — file paths, version numbers, code patterns, Mermaid diagrams.
 
 ```markdown
 # Architecture Overview
 
+## Quick Summary
+[Narrative overview of the app focused on what it does and how it works from a product perspective. Cover:
+- What the app is and who it's for
+- What users can do (the main workflows)
+- How the data is connected (e.g., tasks belong to projects, projects have owners)
+- What's notable — bugs, missing features, thin areas
+Keep it to a short paragraph. No technical jargon needed.]
+
+---
+
 ## System Architecture
-[Mermaid diagram + description of major layers and how they connect]
+
+### How it works
+[Describe the app in terms of what users can do and how those actions flow through the system. Example tone:
+
+"When a user creates a task, the form posts to `/api/tasks` with a title, status, priority, assignee, project, due date, and estimated hours. The task shows up in both the list view and the kanban board on the Tasks page, and counts toward the project's progress bar and the Dashboard stats.
+
+Projects, tasks, and team members are all linked — tasks roll up to projects, projects have owners, and the Dashboard aggregates across everything. The Team page is read-only right now (no create/edit). Settings is a flat key-value store.
+
+Filtering on the Tasks page hits the same endpoint with query parameters — you can filter by status, priority, assignee, or project."
+
+Focus on: user actions → what happens → how data connects → what each screen shows. Mention endpoints by name but don't explain what an endpoint is.]
+
+### Full detail
+[Mermaid diagram + technical description of major layers, entry points, routing, and data flow between components]
+
+---
 
 ## Tech Stack
-[Frameworks, libraries, tools — with versions and purpose]
+
+### How it works
+[Name the key technologies and what role they play, without over-explaining. Example: "React 18 on the frontend, Express on the backend, SQLite for storage. Vite handles the dev server and build. Tests run through Vitest with React Testing Library. No external UI libraries — all components are custom."]
+
+### Full detail
+[Frameworks, libraries, tools — with versions, purpose, and configuration details]
+
+---
 
 ## UI Components & Design Patterns
-[Reusable components, design tokens, naming conventions, style approach]
+
+### How it works
+[What reusable pieces exist and how they're used across the app. Example: "There are buttons in three styles (primary, secondary, ghost), color-coded badges for status and priority, a modal component that wraps all create/edit forms, and a loading spinner. Everything follows a design system with a consistent color palette (brand orange, status colors, neutral grays), the Outfit font, and an 8px spacing grid. New features can reuse all of this."]
+
+### Full detail
+[Component inventory with props/variants, design token system, naming conventions, style approach, code patterns]
+
+---
 
 ## Key Files Reference
 [Quick-reference table of the most important files and what they do]

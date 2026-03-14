@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import Button from '../common/Button';
 
-export default function TaskForm({ onSubmit, onCancel, teamMembers, projects }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [status, setStatus] = useState('todo');
-  const [priority, setPriority] = useState('medium');
-  const [assigneeId, setAssigneeId] = useState('');
-  const [projectId, setProjectId] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [estimatedHours, setEstimatedHours] = useState('');
+export default function TaskForm({ onSubmit, onCancel, teamMembers, projects, initial }) {
+  const [title, setTitle] = useState(initial?.title || '');
+  const [description, setDescription] = useState(initial?.description || '');
+  const [status, setStatus] = useState(initial?.status || 'todo');
+  const [priority, setPriority] = useState(initial?.priority || 'medium');
+  const [assigneeId, setAssigneeId] = useState(initial?.assignee_id || '');
+  const [projectId, setProjectId] = useState(initial?.project_id || '');
+  const [dueDate, setDueDate] = useState(initial?.due_date || '');
+  const [estimatedHours, setEstimatedHours] = useState(initial?.estimated_hours || '');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ export default function TaskForm({ onSubmit, onCancel, teamMembers, projects }) 
         <div className="form-group">
           <label>Assignee</label>
           <select value={assigneeId} onChange={(e) => setAssigneeId(e.target.value)}>
-            <option value="">Unassigned</option>
+            <option value="">None</option>
             {teamMembers?.map((m) => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
@@ -68,7 +68,7 @@ export default function TaskForm({ onSubmit, onCancel, teamMembers, projects }) 
         <div className="form-group">
           <label>Project</label>
           <select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
-            <option value="">No project</option>
+            <option value="">None</option>
             {projects?.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
@@ -87,7 +87,7 @@ export default function TaskForm({ onSubmit, onCancel, teamMembers, projects }) 
       </div>
       <div style={{ display: 'flex', gap: 'var(--space-2)', justifyContent: 'flex-end', marginTop: 'var(--space-4)' }}>
         {onCancel && <Button variant="ghost" onClick={onCancel} type="button">Cancel</Button>}
-        <Button type="submit">Create Task</Button>
+        <Button type="submit">{initial ? 'Update' : 'Create'} Task</Button>
       </div>
     </form>
   );
