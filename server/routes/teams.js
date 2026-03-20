@@ -10,6 +10,60 @@ router.get('/', (req, res) => {
   res.json(members);
 });
 
+// GET /api/team/workload — workload aggregation per member
+// MUST be before /:id or Express treats "workload" as an id
+router.get('/workload', (req, res) => {
+  const db = getDb();
+  const CAPACITY_HOURS = 40;
+
+  const members = db.prepare(`
+    SELECT
+      tm.id,
+      tm.name,
+      tm.role,
+      tm.email,
+      tm.avatar_color,
+      COUNT(CASE WHEN t.status != 'done' THEN 1 END) as active_task_count,
+      COALESCE(SUM(CASE WHEN t.status != 'done' THEN t.estimated_hours ELSE 0 END), 0) as total_estimated_hours,
+      COUNT(CASE WHEN t.status != 'done' AND t.estimated_hours = 0 THEN 1 END) as unestimated_task_count,
+      COUNT(CASE WHEN t.status != 'done' AND t.priority IN ('urgent', 'high') THEN 1 END) as high_priority_count,
+      COUNT(CASE WHEN t.status != 'done' AND t.due_date < date('now') THEN 1 END) as overdue_count
+    FROM team_members tm
+    LEFT JOIN tasks t ON t.assignee_id = tm.id
+    GROUP BY tm.id
+    ORDER BY total_estimated_hours DESC
+  `).all();
+
+  const enriched = members.map((m) => {
+    const utilization_pct = CAPACITY_HOURS > 0 ? Math.round((m.total_estimated_hours / CAPACITY_HOURS) * 100) : 0;
+    let status;
+    if (utilization_pct === 0 && m.active_task_count === 0) status = 'available';
+    else if (utilization_pct < 50) status = 'available';
+    else if (utilization_pct < 80) status = 'normal';
+    else if (utilization_pct <= 100) status = 'at-capacity';
+    else status = 'overloaded';
+
+    const has_unestimated = m.unestimated_task_count > 0;
+
+    return {
+      ...m,
+      capacity_hours: CAPACITY_HOURS,
+      utilization_pct,
+      status,
+      has_unestimated,
+    };
+  });
+
+  const summary = {
+    total_team_hours: enriched.reduce((sum, m) => sum + m.total_estimated_hours, 0),
+    avg_utilization_pct: enriched.length > 0 ? Math.round(enriched.reduce((sum, m) => sum + m.utilization_pct, 0) / enriched.length) : 0,
+    overloaded_count: enriched.filter((m) => m.status === 'overloaded').length,
+    available_capacity_hours: enriched.reduce((sum, m) => sum + Math.max(0, m.capacity_hours - m.total_estimated_hours), 0),
+  };
+
+  res.json({ members: enriched, summary });
+});
+
 // GET /api/team/:id — single team member
 router.get('/:id', (req, res) => {
   const db = getDb();

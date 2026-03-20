@@ -13,6 +13,11 @@ const colorMap = {
   'active': { bg: 'var(--color-success-light)', text: 'var(--color-success)' },
   'completed': { bg: 'var(--color-border-light)', text: 'var(--color-text-secondary)' },
   'on-hold': { bg: 'var(--color-warning-light)', text: 'var(--color-warning)' },
+  // Workload status
+  'overloaded': { bg: 'var(--color-error-light)', text: 'var(--color-error)' },
+  'at-capacity': { bg: 'var(--color-warning-light)', text: 'var(--color-warning)' },
+  'normal': { bg: 'var(--color-info-light)', text: 'var(--color-info)' },
+  'available': { bg: 'var(--color-success-light)', text: 'var(--color-success)' },
 };
 
 export default function Badge({ value, style: customStyle }) {
