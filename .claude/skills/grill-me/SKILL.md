@@ -95,7 +95,17 @@ Save to the specified path or default location.
 ## Rules
 
 - Ask questions **one phase at a time**. Never dump all questions at once.
-- Use AskUserQuestion for structured choices where it helps (especially acceptance criteria ranking and variant evaluation).
+- **ALWAYS use AskUserQuestion for every question.** Never ask questions in plain text. Every question in every phase must use the AskUserQuestion tool. This is non-negotiable — the structured format is faster for the student and keeps the interview moving.
 - **Listen** — the spec reflects THEIR vision, refined by your questions. Don't impose your preferences.
 - Be direct and challenging. "What happens when..." questions should surface real gaps, not softball.
 - The conversation IS the value. The document is the artifact.
+- After writing the spec document, present a summary table of all decisions using this format:
+
+  | Phase | Decision | Your Answer |
+  |-------|----------|-------------|
+  | Vision | Primary user | ... |
+  | Vision | Core purpose | ... |
+  | Constraints | Scope boundaries | ... |
+  | ... | ... | ... |
+
+  This gives the student a quick recap of every choice they made before moving on.

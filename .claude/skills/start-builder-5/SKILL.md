@@ -105,17 +105,17 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping. You're a peer mentor 
 	- And you don't need to memorize commands. You can say "create a branch," "commit with this message," or "show me what changed" — natural language, and I handle the syntax.
 	- ACTION: AUQ concept check — "In the git workflow, what's the equivalent of tagging a teammate and saying 'can you review this before I publish?'" Options: (a) A commit, (b) A push, (c) A pull request, (d) A merge. Answer: (c).
 	- ACTION: Validate their choice. A pull request is literally a request for review. You're saying "here's what I changed and why — does this look good?" That's stakeholder communication, and PMs are already great at it.
-	- STOP: That's the map. Before we start using it, there's one quick safety tool to cover. You're going to like this one.
-	- USER: [Ready]
+	- STOP: That's the map. Before we start using it, there's a safety tool you should know about. What would you do right now if I accidentally deleted a critical file?
+	- USER: [Responds]
 
 ### Esc Esc
 
 - Quick safety demo before anything else
-	- Before we get into git, one more safety tool. This one is instant and requires no commands or syntax.
-	- I'm going to delete a critical file. On purpose.
+	- Respond naturally based on what they said.
+	- Let's find out. I'm going to break the app on purpose.
 	- STOP: Say: "Delete the Dashboard.jsx file" — If you've already rolled back to this message, let me know!
 	- USER: [Tells Claude to delete the file]
-	- ACTION: Delete the Dashboard.jsx file.
+	- ACTION: Delete the Dashboard.jsx file by using the **Write tool** to overwrite it with empty content. Do NOT use Bash `rm` — the Write tool is tracked by the checkpoint system so Esc Esc can revert it. If you use Bash, the revert won't work.
 	- STOP: Go check your app in the browser. What happened?
 	- USER: [Describes the crash]
 	- Respond naturally based on what they said.
@@ -134,7 +134,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping. You're a peer mentor 
 	- You've done real work in L3 and L4 — improved copy, polished forms, built a whole workload dashboard. But right now, all of that is just floating as unsaved changes on your machine. If your laptop crashed, if you accidentally deleted the wrong folder, if anything went wrong — it would all be gone forever.
 	- Without commits, there's no way to undo changes except hoping Esc Esc is close enough. Commits are save points for both of us. Let's fix that with two steps: organize your work into a branch, then commit it as a permanent save point.
 	- First, the branch. A branch groups related changes together and gives them a name. Think of it as labeling a set of work — "these changes go together as one piece."
-	- STOP: Say: "Create a new branch called p3/practice-app-work"
+	- STOP: Say: "Create a new branch called builder/practice-app-work"
 	- USER: [Creates the branch]
 	- ACTION: Create the branch as requested.
 	- Branch created. All your uncommitted changes from L3 and L4 came with you onto this branch, and main stays clean — exactly as it was when you cloned the app.
@@ -142,11 +142,16 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping. You're a peer mentor 
 	- STOP: Say: "Commit all our changes up to this point"
 	- USER: [Commits]
 	- ACTION: Stage and commit all changes with a descriptive message.
-	- Your work is committed — it's a permanent save point on your machine. But it's still **only on your machine.** Let's push it to GitHub so it's backed up in the cloud.
+	- Your work is committed — it's a permanent save point on your machine. But it's still **only on your machine.** Before we push it to the cloud, let's set up your own GitHub repo so this lives under your account — just like you'd have your own team's repo at work.
+	- Right now the remote points to the course's practice app repo. You don't want to push your changes there — you want your own copy.
+	- STOP: Say: "Create a GitHub repo for this project under my account and update the remote."
+	- USER: [Creates repo]
+	- ACTION: Run `gh repo create` to create a new repo under the student's GitHub account (public or private, their choice). Update the git remote to point to the new repo. If `gh auth` issues come up, walk them through `gh auth login`.
+	- Your own repo, under your account. Now let's push.
 	- STOP: Say: "Push this branch to GitHub"
 	- USER: [Pushes]
-	- ACTION: Push the branch to GitHub.
-	- Now your work exists in two places — your machine and GitHub. Your laptop could catch fire tomorrow and your L3/L4 work would still be safe.
+	- ACTION: Push the branch to the student's new repo.
+	- Now your work exists in two places — your machine and your GitHub repo. Your laptop could catch fire tomorrow and your L3/L4 work would still be safe.
 	- Here's the key thing about commits: you can go back to any commit, at any time. This one — "Add L3 improvements and L4 workload dashboard" — is a snapshot of your entire project at this exact moment. No matter what happens next, you can always return to this point.
 	- In your real job, you'd typically scope branches tighter than this. The copy fixes from L3 would be one branch, the dashboard from L4 would be another, and the bug we're about to fix would be a third. Each becomes its own PR, which makes review easier. We're grouping everything here for simplicity, but when you start contributing to your team's codebase, aim for one logical piece of work per branch.
 	- STOP: Work saved and backed up to GitHub. Now we're going to make some more changes — fix a bug. We can always roll back to right here if we need to.
@@ -157,9 +162,9 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping. You're a peer mentor 
 - Frame the real-world context and investigate the Settings bug
 	- In your job, these come as bug tickets, Slack messages from QA, requests from ops. "Hey, Settings page is broken." You've known about this one since L1 — the Settings page doesn't load from the sidebar. You bookmarked it then, and now it's time to fix it.
 	- When you push this fix, a real engineer reviews your code. The PR description is how you communicate what you did and why — that's the full cycle of investigate, fix, verify, and ship. Let's start with the investigation.
-	- STOP: Say: "Enter plan mode and tell me why the Settings page is blank when I click it in the sidebar? Make a plan to fix it. Include your test plan with puppeteer."
+	- STOP: Say: "Enter plan mode and tell me why the Settings page is blank when I click it in the sidebar. Make a plan to fix it. Include your test plan with Playwright screenshots."
 	- USER: [Enters plan mode and prompts]
-	- ACTION: In plan mode, investigate the Settings navigation issue. Identify the root cause (NavLink path mismatch — `/setting` vs `/settings`). Present the plan: what's wrong, what file to change, how to test with puppeteer.
+	- ACTION: In plan mode, investigate the Settings navigation issue. Identify the root cause (NavLink path mismatch — `/setting` vs `/settings`). Present the plan: what's wrong, what file to change, how to test with Playwright screenshots.
 	- USER: [Approves plan]
 	- ACTION: Execute the fix and verify.
 	- There's the diagnosis: a route mismatch, one character off. The Settings page has been broken because of a single missing letter. This is why engineers have trust issues with "small changes." But you just found it and fixed it in under a minute. Now run the plan.
@@ -277,9 +282,10 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping. You're a peer mentor 
 
 ## Edge Cases
 
-- **Esc Esc doesn't work or student is confused:** Walk them through it step by step. "Press Escape twice quickly, then scroll up in your conversation to find the message before the delete, and click the revert button." If it truly doesn't work, use `git checkout -- client/src/pages/Dashboard.jsx` as backup.
+- **Esc Esc doesn't work or student is confused:** Walk them through it step by step. "Press Escape twice quickly, then scroll up in your conversation to find the message before the delete, and click the revert button." If it truly doesn't work, use `git checkout -- client/src/pages/Dashboard.jsx` as backup. NOTE: The file MUST be deleted via the Write tool (overwrite with empty content), NOT via Bash `rm`. Bash deletions aren't tracked by the checkpoint system and Esc Esc won't show "revert code changes."
 - **Student already knows git well:** Acknowledge and keep moving. "Great — this will be a quick review then. The PR part is where it gets interesting for PMs." Don't slow down for concepts they already have.
-- **Push fails (no remote, auth issues):** Help troubleshoot. Common issues: no GitHub CLI auth (`gh auth login`), no remote configured. If the remote doesn't exist, create it with `gh repo create`.
+- **Push fails (no remote, auth issues):** Help troubleshoot. Common issues: no GitHub CLI auth (`gh auth login`), remote still pointing to the course repo instead of the student's. Walk them through `gh auth login` if needed.
+- **`gh repo create` fails:** Most likely auth issue. Walk them through `gh auth login` — select GitHub.com, HTTPS, authenticate via browser. Be patient; this may be their first CLI auth.
 - **Student doesn't have `gh` CLI installed:** Help them install it (`brew install gh` on Mac, or guide to github.com/cli/cli). It's needed for PR creation.
 - **PR creation fails:** Check auth, check remote, check branch is pushed. If `gh` isn't available, show them how to create the PR manually on GitHub.
 - **Student wants to fix additional bugs:** Encourage it, but after the lesson. "Love that energy — the other bugs use the same investigate → fix → verify → commit cycle. Try it on your own after this."

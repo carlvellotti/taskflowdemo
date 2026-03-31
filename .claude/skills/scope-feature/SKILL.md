@@ -1,10 +1,11 @@
 ---
 name: scope-feature
 description: |
-  Analyze a codebase to scope a proposed feature. Maps affected files, new
-  components needed, existing patterns to reuse, test gaps, and estimates
-  complexity. Saves a scoping brief to docs/. Run this when you want to
-  estimate the work involved in adding a new feature.
+  Scope a proposed feature against the codebase. Maps what you'd need to build,
+  what already exists, dependencies and unknowns, and where the difficulty is.
+  Assumes /explore-codebase has already been run — uses docs/ for context.
+  Saves a scoping brief to docs/. Use when you want to understand what
+  building a feature would actually require.
 allowed-tools:
   - Read
   - Write
@@ -13,62 +14,45 @@ allowed-tools:
   - Bash
 ---
 
-You are running a feature scoping analysis. The user provides a feature description as input — everything after `/scope-feature` on the command line.
+You are running a feature scoping analysis. The user provides a feature description as input — everything after `/scope-feature` on the command line. This might be rough notes, a few bullet points, or a stream-of-consciousness description. That's fine — work with whatever you get.
+
+## Context
+
+This skill assumes `/explore-codebase` has already been run and `docs/architecture-overview.md` exists. Start by reading that file to understand the existing architecture, tech stack, and component patterns. Don't re-explore the entire codebase from scratch — use what's already been mapped.
 
 ## Process
 
-**Step 1: Parse the feature description.** Extract the core functionality, key requirements, and any constraints mentioned.
+**Step 1: Read existing context.** Read `docs/architecture-overview.md` and any other relevant docs in `docs/`. Then read only the specific files you need to answer the scoping questions below — don't scan the entire codebase.
 
-**Step 2: Analyze the codebase.** Read relevant files to understand:
-
-- **Files affected** — which existing files would need modifications and why
-- **New components needed** — what doesn't exist yet that must be created
-- **Patterns to reuse** — existing components, hooks, API patterns, and styles the new feature should follow for consistency
-- **Database changes** — new tables, columns, seed data, or queries needed
-- **API additions** — new endpoints or modifications to existing routes
-- **Test gaps** — what tests exist for related features, what new tests would be needed
-- **Complexity estimate** — Low / Medium / High with justification based on what you found
+**Step 2: Parse the feature description.** Extract what the user wants built, even if it's rough.
 
 **Step 3: Generate the scoping brief:**
 
 ```markdown
 # Scoping Brief: {Feature Name}
 
-## Feature Summary
-{What it does, who it's for, how it fits into the existing app}
+## What You'd Need to Build
+{The major pieces — new components, endpoints, database changes. For each one, a sentence on what it does and why it's needed. Be specific about file paths and patterns.}
 
-## Affected Files
-{Table: file path, what changes, why}
+## What Already Exists
+{Existing components, hooks, API patterns, and styles the new feature should reuse. Reference specific files. This is what makes the build faster and more consistent.}
 
-## New Files to Create
-{Table: file path, purpose, based on which existing pattern}
+## Dependencies & Unknowns
+{Things that depend on other things. External services or integrations that would need investigation. Areas where more conversation with engineering is needed before committing to an approach.}
 
-## Existing Patterns to Reuse
-{Specific components, hooks, styles, and API patterns to reference}
-
-## Database Changes
-{New tables/columns, schema changes, seed data updates}
-
-## API Changes
-{New endpoints, modified endpoints, request/response formats}
-
-## Test Plan
-{What to test, which existing test patterns to follow}
-
-## Complexity Assessment
-{Low/Medium/High — with specific justification grounded in the codebase}
-
-## Risks & Dependencies
-{What could go wrong, what depends on what, areas of uncertainty}
+## Where the Difficulty Is
+{Which pieces are straightforward and which are complex — and WHY. Ground this in specific code patterns, architectural constraints, or gaps in the existing system. This is what helps a PM understand where to focus attention and what to ask engineers about.}
 ```
 
-**Step 4: Save to `docs/{feature-name}-scoping.md`** — derive the filename from the feature description using kebab-case.
+**Step 4: Save to `docs/{feature-name}-scoping.md`.**
 
-**Step 5: Present a summary** of the key findings. Highlight the most important takeaways: how many files are affected, what can be reused, and the overall complexity assessment.
+**Step 5: Present a summary** of the key findings. Lead with what's hard and why.
 
 ## Guidelines
 
 - Be specific — reference actual file paths, component names, and code patterns.
-- Ground the complexity estimate in what you found, not gut feel.
-- Flag areas of uncertainty where more information is needed.
-- The brief should be useful in a sprint planning conversation — an engineer should be able to read it and say "yes, that's right" or "you missed this."
+- Do NOT estimate hours, story points, sprints, or timelines. That's for the engineering team.
+- Do NOT generate a test plan. That's for QA and engineering.
+- Ground everything in what you found in the code, not general assumptions.
+- The brief should help a PM understand where their leverage is — what's easy to build on, what requires new infrastructure, and what needs more investigation before anyone commits to an approach.
+- Keep it concise. A PM should be able to read this in 2 minutes and walk into a planning conversation informed.
