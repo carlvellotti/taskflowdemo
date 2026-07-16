@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><style>
+/* CC4PMs course-figure component kit: FSPM brand. */
+* { margin:0; padding:0; box-sizing:border-box; }
+:root { --maple:#e63f02; --gold:#fcc403; --cream:#fff6db; --butter:#f4d35e;
+  --ink:#111827; --slate:#334155; --muted:#6b7280; --canvas:#f8fafc; --line:#e5e7eb; }
+body { background:#e5e7eb; display:flex; justify-content:center; padding:40px; }
+.graphic { background:#fff; font-family:'Outfit',system-ui,sans-serif; color:var(--ink); }
+.kicker { font-size:15px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+.kicker .accent { color:var(--maple); }
+.display { font-weight:800; line-height:1.04; letter-spacing:-.01em; }
+.label { font-size:17px; font-weight:600; }
+.body { font-size:16px; font-weight:500; color:var(--slate); line-height:1.45; }
+.mono { font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:400; }
+.banner { width:1600px; padding:0; display:flex; }
+.banner .spine { width:14px; background:var(--maple); flex:none; }
+.banner .inner { flex:1; padding:56px 64px 52px; display:flex; flex-direction:column; }
+.banner .top { display:flex; justify-content:space-between; align-items:baseline; }
+.banner .display { font-size:72px; margin-top:22px; }
+.banner .display .under { box-shadow:inset 0 -18px 0 var(--gold); }
+.banner .sub { margin-top:18px; font-size:20px; }
+.banner .meta { font-size:15px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--slate); }
+.banner .dots { display:flex; gap:8px; margin-top:26px; }
+.banner .dots span { width:34px; height:8px; background:var(--line); border-radius:4px; }
+.banner .dots span.on { background:var(--maple); }
+.banner-done .spine { background:var(--gold); }
+.banner-done .inner { background:var(--maple); }
+.banner-done .kicker { color:var(--cream); }
+.banner-done .kicker .accent { color:var(--gold); }
+.banner-done .display { color:#fff; }
+.banner-done .display .under { box-shadow:inset 0 -18px 0 rgba(0,0,0,.22); }
+.banner-done .sub, .banner-done .meta { color:var(--cream); }
+.banner-done .dots span { background:rgba(255,255,255,.28); }
+.banner-done .dots span.on { background:var(--gold); }
+.card { width:1320px; padding:44px 48px; }
+.card > .kicker { margin-bottom:8px; }
+.card > .headline { font-size:30px; font-weight:800; margin-bottom:26px; }
+.card > .headline .accent { color:var(--maple); }
+.flow { display:flex; align-items:center; gap:0; }
+.node { border:2.5px solid var(--ink); border-radius:12px; padding:18px 22px; text-align:center; background:#fff; }
+.node .t { font-size:18px; font-weight:700; }
+.node .d { font-size:14px; font-weight:500; color:var(--muted); margin-top:4px; }
+.node.hero { background:var(--cream); border-color:var(--maple); }
+.node.hero .t { color:var(--maple); }
+.node.soft { border-style:dashed; border-color:var(--muted); }
+.arrow { flex:none; display:flex; flex-direction:column; align-items:center; padding:0 14px; color:var(--slate); }
+.arrow svg { display:block; }
+.arrow .cap { font-size:12.5px; font-weight:600; color:var(--muted); margin-top:4px; white-space:nowrap; }
+.flow.vertical { flex-direction:column; align-items:stretch; }
+.flow.vertical .arrow { padding:10px 0; align-self:center; }
+.steps { display:flex; flex-direction:column; gap:14px; }
+.step { display:flex; gap:18px; align-items:flex-start; }
+.step .n { flex:none; width:38px; height:38px; border-radius:50%; background:var(--ink); color:#fff; font-weight:700; font-size:17px; display:flex; align-items:center; justify-content:center; }
+.step.hero .n { background:var(--maple); }
+.step .t { font-size:18px; font-weight:700; padding-top:6px; }
+.step .t small { display:block; font-size:15px; font-weight:500; color:var(--slate); margin-top:2px; }
+.compare { display:flex; gap:26px; }
+.panel { flex:1; border:2.5px solid var(--ink); border-radius:14px; overflow:hidden; }
+.panel .head { padding:14px 20px; font-weight:800; font-size:18px; background:var(--canvas); border-bottom:2.5px solid var(--ink); }
+.panel.hero { border-color:var(--maple); }
+.panel.hero .head { background:var(--cream); color:var(--maple); }
+.panel .bd { padding:18px 20px; font-size:16px; font-weight:500; color:var(--slate); line-height:1.55; }
+.panel .bd ul { list-style:none; }
+.panel .bd li { padding:5px 0 5px 24px; position:relative; }
+.panel .bd li::before { content:"·"; position:absolute; left:6px; color:var(--maple); font-weight:800; }
+.caption { margin-top:20px; font-family:'JetBrains Mono',monospace; font-size:13.5px; color:var(--muted); }
+.banner .inner.split { flex-direction:row; align-items:center; gap:48px; }
+.banner .lead { flex:1 1 58%; display:flex; flex-direction:column; }
+.banner .motif { flex:0 0 460px; background:var(--canvas); border:2px solid var(--line); border-radius:14px; padding:22px 24px; }
+.banner-done .motif { background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.25); color:#fff; }
+.motif .m-title { font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.banner-done .motif .m-title { color:var(--cream); }
+.motif .m-cap { margin-top:12px; font-size:14.5px; font-weight:600; color:var(--maple); }
+.loop { position:relative; margin:0 auto; }
+.loop svg.ring { position:absolute; inset:0; }
+.loop .stop { position:absolute; transform:translate(-50%,-50%); background:#fff; border:2.5px solid var(--ink); border-radius:12px; padding:12px 16px; max-width:290px; text-align:center; }
+.loop .stop .t { font-size:16.5px; font-weight:700; }
+.loop .stop .d { font-size:13.5px; font-weight:500; color:var(--muted); margin-top:2px; }
+.loop .stop.hero { background:var(--cream); border-color:var(--maple); }
+.loop .stop.hero .t { color:var(--maple); }
+.loop .center { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); text-align:center; font-weight:800; font-size:19px; }
+
+
+.vf{display:flex;flex-direction:column;align-items:center;gap:2px}
+.vf .b{border:2.5px solid var(--ink);border-radius:10px;padding:9px 22px;font-size:15px;font-weight:800;background:#fff}
+.vf .trio{display:flex;gap:9px}
+.vf .v{width:70px;text-align:center;border:2px solid var(--ink);border-radius:9px;padding:9px 0;font-size:15px;font-weight:800;background:#fff}
+.vf .win{border:2.5px solid var(--maple);background:var(--cream);color:var(--maple);border-radius:10px;padding:9px 22px;font-size:15px;font-weight:800}
+</style></head><body>
+<div class="graphic banner">
+  <div class="spine"></div>
+  <div class="inner split">
+    <div class="lead">
+      <div class="top"><div class="kicker">L4 <span class="accent">·</span> Building Features &amp; Variants</div></div>
+      <div class="display" style="font-size:50px"><span class="under">Building Features &amp; Variants</span></div>
+      <div class="sub body">Why debate when you can build all three?</div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div class="dots"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class=""></span></div><div class="meta">Lesson 4 of 5</div></div>
+    </div>
+    <div class="motif">
+      <div class="m-title">Build to decide</div>
+      <div class="vf">
+        <div class="b">SPEC</div>
+        <svg width="20" height="30" viewBox="0 0 20 30" fill="none"><path d="M10 2 V 24 m 0 0 l -6 -9 m 6 9 l 6 -9" stroke="#334155" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div class="trio"><div class="v">A</div><div class="v">B</div><div class="v">C</div></div>
+        <svg width="20" height="30" viewBox="0 0 20 30" fill="none"><path d="M10 2 V 24 m 0 0 l -6 -9 m 6 9 l 6 -9" stroke="#334155" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <div class="b">COMPARE</div>
+        <svg width="20" height="30" viewBox="0 0 20 30" fill="none"><path d="M10 2 V 24 m 0 0 l -6 -9 m 6 9 l 6 -9" stroke="#e63f02" stroke-width="2.8" stroke-linecap="round"/></svg>
+        <div class="win">PICK THE WINNER</div>
+      </div>
+      <div class="m-cap">Build all three.</div>
+    </div>
+  </div>
+</div>
+</body></html>
