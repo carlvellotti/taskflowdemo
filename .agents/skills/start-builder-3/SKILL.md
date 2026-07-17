@@ -72,7 +72,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 ## Plan Mode
 
 - Signpost the tool before it's needed: before any change gets made, there's one tool to meet, because we'll use it on every change today. It's called **plan mode**.
-- What it is, plainly: whenever you're not 100% sure what I'm about to do (which files I'll touch, what might break), you can have me plan instead of act. Say "enter plan mode," or use `/plan`, or press Shift+Tab. **Instead of changing anything, I map out everything I'd do and show you the plan first.** A plan card appears, and nothing executes until you approve it on the "Implement this plan?" sheet.
+- What it is, plainly: whenever you're not 100% sure what I'm about to do (which files I'll touch, what might break), you can have me plan instead of act. Switch the composer into plan mode by typing `/plan mode` (or pressing Shift+Tab) first, then send your request; just saying "enter plan mode" inside a message won't switch modes. **Instead of changing anything, I map out everything I'd do and show you the plan first.** A plan card appears, and nothing executes until you approve it on the "Implement this plan?" sheet.
 - The judgment call, as a quick rule of thumb in a table:
 
   | Change | Plan mode? |
@@ -103,9 +103,9 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - The PM judgment framing, kept intact: **not everything I suggest is worth changing.** Some of these are real improvements, some are fine as-is. Their call.
 - Ask (AUQ): "Which are worth actually doing? Pick one or two." Render the suggestions as a lettered menu, one per letter, and ask them to reply with one or two letters (e.g. "a and c"). There's no right answer; this is product judgment.
 - STOP: Wait for their picks.
-- React to what they picked, engaging with their reasoning if they gave any. Then put plan mode to work. Tell them to send, on its own line: **"Enter plan mode and scope the copy changes I picked. What files does this touch? What might break?"**
+- React to what they picked, engaging with their reasoning if they gave any. Then put plan mode to work. Two steps: first have them type `/plan mode` to switch the composer into plan mode, then send, on its own line: **"Scope the copy changes I picked. What files does this touch? What might break?"**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode. Present the plan: files affected and a risk read. For a copy fix this should be minimal, one or two files, no breaking risk. Wait for approval on the approval sheet.
+- ACTION: In plan mode, present the plan: files affected and a risk read. For a copy fix this should be minimal, one or two files, no breaking risk. Wait for approval on the approval sheet.
 - STOP: Wait for the student to approve the plan.
 - ACTION: Apply the copy changes exactly as scoped.
 - Have them verify with their own eyes: **open http://localhost:5173 and find your copy change. Did it land the way you expected?**
@@ -128,9 +128,9 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - STOP: Wait for their observations.
 - React to what they actually found (ProjectForm is bare next to TaskForm: thinner placeholders, rougher layout, less care). Then teach it: two forms, same app, two levels of polish. That gap is everywhere in real products, and users feel it even when they can't name it. **As a PM, these inconsistencies quietly erode trust in your product.**
 - The move: not redesigning ProjectForm from scratch. **Find what TaskForm does well, and bring ProjectForm up to that standard.** Same reference pattern, pointed at your own codebase's best work.
-- Tell them to send, on its own line: **"Enter plan mode and scope this: compare TaskForm and ProjectForm. What patterns does TaskForm use that ProjectForm is missing? Then improve ProjectForm to match that quality."**
+- Two steps: first have them type `/plan mode`, then send, on its own line: **"Scope this: compare TaskForm and ProjectForm. What patterns does TaskForm use that ProjectForm is missing? Then improve ProjectForm to match that quality."**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode. Compare `client/src/components/tasks/TaskForm.jsx` and `client/src/components/projects/ProjectForm.jsx`. Identify the patterns TaskForm has that ProjectForm lacks (placeholder conventions, field layout, spacing, labels). Present the plan: which patterns get applied, which files change. Wait for approval.
+- ACTION: In plan mode, compare `client/src/components/tasks/TaskForm.jsx` and `client/src/components/projects/ProjectForm.jsx`. Identify the patterns TaskForm has that ProjectForm lacks (placeholder conventions, field layout, spacing, labels). Present the plan: which patterns get applied, which files change. Wait for approval.
 - STOP: Wait for the student to approve the plan.
 - ACTION: Apply the improvements as scoped. Report when complete, briefly.
 - Verification, student-eyes again: **check both forms in the browser. Does New Project feel like it lives in the same app as New Task now?**
@@ -157,9 +157,9 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - Confirm or supply it: **builder-validator.** One agent (or one step) builds, a check verifies. Here the validator is a camera: Codex has a built-in screenshot tool, so I can screenshot the page before the change, make the change, screenshot after, and compare the result against what you asked for. Neither of us hopes anymore.
 - ACTION: Display the loop image. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-3/assets/screenshot-loop.png`) and render it as a markdown image using that absolute path.
 - One-line portability note: outside Codex, a CLI called Playwright does the same job (`npx playwright screenshot <url> <file>`), so this loop travels to any setup.
-- Tell them to send, on its own line: **"Enter plan mode: improve the Dashboard stat cards with better spacing and visual weight. Reference the design tokens in tokens.css. Screenshot before and after so we can compare."**
+- Two steps: first have them type `/plan mode`, then send, on its own line: **"Improve the Dashboard stat cards with better spacing and visual weight. Reference the design tokens in tokens.css. Screenshot before and after so we can compare."**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode. Read `client/src/styles/tokens.css` for the app's design tokens (colors, spacing, font sizes). Scope the changes to `client/src/components/dashboard/Stats.jsx`: spacing, hierarchy, and visual weight from the tokens only. This app has no icon library, so do NOT add one (that would be exactly the guest-code move this lesson warns about); if visual accents help, minimal inline SVGs styled from the tokens are the honest ceiling. Present the plan. Wait for approval.
+- ACTION: In plan mode, read `client/src/styles/tokens.css` for the app's design tokens (colors, spacing, font sizes). Scope the changes to `client/src/components/dashboard/Stats.jsx`: spacing, hierarchy, and visual weight from the tokens only. This app has no icon library, so do NOT add one (that would be exactly the guest-code move this lesson warns about); if visual accents help, minimal inline SVGs styled from the tokens are the honest ceiling. Present the plan. Wait for approval.
 - STOP: Wait for the student to approve the plan.
 - ACTION: Take the "before" screenshot of `http://localhost:5173` with the built-in screenshot tool and render it inline as a markdown image (absolute path). Then apply the improvements as scoped. Then take the "after" screenshot and render it inline the same way. If the screenshot tool fails at any point, say so plainly and fall back to student browser verification; never describe a screenshot that wasn't taken.
 - Both images should now be in the conversation, before and after.
@@ -241,5 +241,6 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - **Student notices the "Completd Tasks" typo on the Dashboard:** Credit the catch. That's one of the planted bugs, and it's theirs to fix in L5 when git and shipping arrive.
 - **Student asks whether plan mode costs them anything:** It costs about 30 seconds and saves the mystery. Plans are cheap; surprise edits aren't.
 - **Student wants to skip plan mode on a change:** Fine for the copy fix if they insist (it's genuinely low-risk), but keep it for the form and visual changes; multi-file edits are exactly what it's for.
+- **Plan mode didn't engage (no plan card, changes just happened):** They sent the request without toggling first. Have them type `/plan mode` to switch the composer, then resend the same request. One line, no drama.
 - **Student starts a New Chat mid-lesson anyway:** They can rerun `/start builder 3`; the lesson is idempotent (no asset deploy, progress writes only at the end), so pick up from wherever their app state actually is.
 - **Student asks why we don't just let them edit the code directly:** They can, and some students do. The lesson teaches the agent-driven path because it scales to changes they couldn't hand-write; editing directly is always allowed.
