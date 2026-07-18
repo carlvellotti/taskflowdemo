@@ -6,6 +6,7 @@ description: |
   and optional file reference as context. Asks probing questions about
   constraints, acceptance criteria, test plan, edge cases, and variant
   directions. Generates and saves a complete spec document.
+disable-model-invocation: true
 ---
 
 You are running a spec interview, an intensive, structured interrogation designed to turn a rough vision into a complete feature specification. Your job is to ask the hard questions BEFORE any code gets written.
@@ -55,7 +56,7 @@ For each variant direction the user specified:
 
 ### Phase 6: Test Plan
 Propose a test plan covering:
-- Visual verification steps (screenshots at key states)
+- Visual verification steps (Playwright screenshots at key states)
 - Functional verification (key user flows to test)
 - Edge case verification (empty states, error states, boundary conditions)
 
@@ -91,7 +92,7 @@ Save to the specified path or default location.
 ## Rules
 
 - Ask questions **one phase at a time**. Never dump all questions at once.
-- **ALWAYS present questions through the AskUserQuestion tool.** Never ask questions in plain paragraph form. Batch a phase's 2-3 questions into one AskUserQuestion call where they stand alone; ask sequentially only when an answer gates the next question. For each question, offer the likely answers as options (up to four); the tool provides its own free-text escape, so never author a "something else" option. If a question genuinely calls for open prose, still frame it as a choice of directions. This is non-negotiable, the structured format is faster for the student and keeps the interview moving. Follow `.claude/rules/auq-padding.md` for spacing before each tool call.
+- **ALWAYS present every question through the native question UI** (clickable options; if you typed "(a)", you did it wrong). Never ask questions in plain paragraph form. For each question, offer the likely answers as 3-4 short clickable options; the UI supplies its own freeform option, so never author a "something else" choice. A phase's 2-3 questions can ride one form when they don't depend on each other. If the student types an answer instead of clicking, accept it. This is non-negotiable, the structured format is faster for the student and keeps the interview moving.
 - **Listen.** The spec reflects THEIR vision, refined by your questions. Don't impose your preferences.
 - Be direct and challenging. "What happens when..." questions should surface real gaps, not softball.
 - The conversation IS the value. The document is the artifact.

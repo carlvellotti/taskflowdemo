@@ -6,21 +6,17 @@ description: |
   two threads the module builds on (the Settings bug, the bare Team page).
   Use when the student types /start-builder-1.
 disable-model-invocation: true
-allowed-tools:
-  - Read
-  - Bash
-  - AskUserQuestion
 ---
 
 ## Setup
 
-Read `.claude/rules/teaching-rules.md` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, and platform delivery.
+Read `.cursor/rules/teaching-rules.mdc` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, the native question UI, image display, file-path links.
 
-This lesson stages no assets and writes no files at setup. The student just arrived here from the Builder Bridge: they cloned this repo, opened it as its own project, and started a fresh session. The progress file for this repo does not exist yet; the Sendoff creates it.
+This lesson stages no assets and writes no files at setup. The student just arrived here from the Builder Bridge: they cloned this repo, opened it as a new project, and started a fresh agent. The progress file for this repo does not exist yet; the Sendoff creates it.
 
 You are teaching Builder Lesson 1: Welcome to The PM Builder.
 
-**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, run commands). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it with the AskUserQuestion tool per the teaching rules.
+**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, run commands). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it through the native question UI per the teaching rules.
 
 **Rules specific to this lesson:**
 - Do not install or run anything until the student sends the request. The install beat depends on the student driving.
@@ -34,9 +30,9 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
 
 **Beat one: introduce the concept, then one plain question. No agenda yet.**
 
-- ACTION: Display the lesson title card FIRST, as the very first line of the reply, by EMITTING this exact markdown image line (emitting the line is what renders it; never Read the image file): `![Welcome to The PM Builder](.claude/skills/start-builder-1/assets/title-card.png)`
+- ACTION: Display the lesson title card FIRST, as the very first line of the reply, before any prose, by EMITTING a markdown image line (emitting the line is what renders it; never Read the image file). Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-1/assets/title-card.png`); if that absolute path contains spaces, first run `mkdir -p /tmp/cc4pms-assets && cp <file> /tmp/cc4pms-assets/builder1-title-card.png` and emit the /tmp path instead.
 - Warm one-sentence lead-in, then the bolded lesson title (**Welcome to The PM Builder**), then the concept: **you just cloned a real codebase. A real one.** This is TaskFlow, a simplified version of the product they've been building context around all course: a React frontend, an Express backend, a SQLite database. It's not a toy. It's a small but complete web app with real routing, real API calls, and real components.
-- First question is plain conversational text, never a menu: **have you ever poked around inside a real codebase before, even just to look? What was that like?**
+- First question is plain conversational text, never a structured question: **have you ever poked around inside a real codebase before, even just to look? What was that like?**
 - STOP: Wait for their answer.
 
 **Beat two: react to their answer first, THEN lay out the lesson.**
@@ -74,7 +70,7 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
 ## First Tour
 
 - The honest warning first, near-verbatim: the app is not perfect. There are bugs in there, design inconsistencies, and a page that's barely started. **I may have planted a few problems in there for you to find. Nothing personal.** And that messiness is the point: **this is what real codebases look like when you join them.** Nobody hands you clean code and a blank canvas.
-- Send them in. Give the served URL on its own line as a link: [http://localhost:5173](http://localhost:5173). One practical note, stated as information: if the page doesn't render where it opens, the same URL in their regular browser shows exactly the same app.
+- Send them in. Give the served URL on its own line as a link: [http://localhost:5173](http://localhost:5173). One practical note, stated as information: the served URL opens as a rendered page in Cursor's integrated browser, and their regular browser at the same address shows exactly the same app; either works. Always the URL, never a file.
 - STOP: **Click through all five pages: Dashboard, Projects, Tasks, Team, Settings. Take a minute. Then tell me what you noticed.**
 
 ---
@@ -88,13 +84,13 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
   - **The Settings page is a real bug, and it's yours to fix in L5**, when git and shipping enter the picture. File it away.
   - **The Team page is barely started**: names, roles, avatars, and nothing a PM could plan with. That empty page is where they'll build the Workload Dashboard in L4.
 - The transfer note, at its natural moment: what they just did (find a repo on GitHub, clone it, install dependencies, run it, poke around) is exactly how you get started with any open-source project. **This pattern works way beyond this course.**
-- Ask (AUQ): "Four lessons ahead. Which one are you most curious about?" Options (neutral, no letters; the tool renders the choices):
+- Ask (AUQ): "Four lessons ahead. Which one are you most curious about?" Options as neutral bullets (there's no right answer; it's a curiosity check):
   - Observe: exploring the codebase and generating diagrams from it
   - Contribute: improving existing features
   - Build: creating the Workload Dashboard from scratch
   - Ship: git, bug fixes, and a real PR
-- STOP: Wait for their pick. There's no right answer; it's a curiosity check.
-- React to their pick and connect it to the lesson that delivers it (e.g. picked the shipping option: that's L5, and everything before it earns the shipping moment). One or two sentences, then move on.
+- STOP: Wait for their pick.
+- React to their pick and connect it to the lesson that delivers it (e.g. picked Ship: that's L5, and everything before it earns the shipping moment). One or two sentences, then move on.
 
 ---
 
@@ -145,7 +141,7 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
   ```
 
   Never overwrite a populated file: the `[ -f ] ||` guard makes the create-only-if-missing rule hold, and the merge branch preserves any existing `name`, `track`, and prior `completed_lessons`. `name` starts as null here; this repo tracks Builder progress fresh.
-- Then tell them: when you're ready for the next lesson, run `/clear`, then run (on its own line):
+- Then tell them: when you're ready for the next lesson, start a New Agent, then run (on its own line):
 
   `/start-builder-2`
 
@@ -157,5 +153,6 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
 - **`npm run install:all` fails:** Common causes: Node.js not installed or too old (the app needs Node 18+), permission issues. Help them debug; `node --version` first.
 - **App doesn't load in the browser:** Check both processes started (Vite on 5173, Express on 3001). Common fix: kill orphan processes holding those ports, then relaunch `npm run dev`.
 - **Port 5173 is already serving when the lesson starts:** The app is already running (a previous session's server). Skip the dev launch, confirm the page loads, and continue.
+- **The in-app browser doesn't render the page:** No problem, and don't push. Their regular browser at `http://localhost:5173` shows exactly the same app; the in-app view is convenience, not a requirement. If a network permission prompt appears the first time, allowing it is safe; if they decline, the external browser covers everything.
 - **Student doesn't notice the Settings bug or the Team page:** Guide without spoiling: "Try clicking Settings in the sidebar." And: "Look at the Team page again. What could a PM actually DO with what's there?"
-- **Student wants to skip ahead:** Let them. Run `/clear`, then `/start-builder-2`.
+- **Student wants to skip ahead:** Let them. Start a New Agent, then `/start-builder-2`.

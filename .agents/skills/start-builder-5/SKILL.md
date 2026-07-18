@@ -241,7 +241,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
   fi
   ```
 
-  `current_lesson` is the literal sentinel `"choose-next"`: Builder is self-contained and never auto-chains into another module. The `[ -f ] ||` guard keeps the create-only-if-missing rule; the merge branch preserves any existing `name` and prior `completed_lessons`.
+  `current_lesson` is the literal sentinel `"choose-next"`: Builder is self-contained and never auto-chains into another module. The module picker below is a plain list of handles, each on its own line; it is never rendered as a structured question. The `[ -f ] ||` guard keeps the create-only-if-missing rule; the merge branch preserves any existing `name` and prior `completed_lessons`.
 - Close by telling them: head back to the course project window, start a New Chat there, and run whichever module command they picked, on its own line, e.g.:
 
   `/start data 1`

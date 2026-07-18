@@ -2,14 +2,14 @@
 name: reference
 description: |
   Open the CC4PMs reference documentation. Use when the student types /reference,
-  optionally with a topic like /reference skills or /reference funnel analysis.
+  optionally with a topic like /reference skills or /reference plan mode.
 ---
 
 ## How This Works
 
-The reference docs are deployed at `https://fullstackpm.com/docs`. Every page is listed in `.agents/skills/reference/pages.md` as `Title — path`. Open pages in the browser with `open <url>`.
+The reference docs are deployed at `https://fullstackpm.com/docs`. Every page is listed in `.claude/skills/reference/pages.md` as `Title — path`. Open pages in the browser with `open <url>`.
 
-The library serves all three platforms from one tree: pages with platform-specific mechanics carry platform tabs (Claude Code / Codex / Cursor). The first time the student opens a page, tell them once: pick the Codex tab on any tabbed block. The choice sticks across the whole site.
+The library serves all three platforms from one tree: pages with platform-specific mechanics carry platform tabs (Claude Code / Codex / Cursor). The first time the student opens a page, tell them once: pick the Claude Code tab on any tabbed block. The choice sticks across the whole site.
 
 The docs are member-gated: students may be asked to log in to fullstackpm.com with their course email the first time.
 
@@ -30,28 +30,19 @@ open https://fullstackpm.com/docs
 
 Tell the student: "Reference docs are open. Browse by section or try `/reference [topic]` to jump to a specific page."
 
-### 3. With arguments (e.g., `/reference skills` or `/reference funnel analysis`)
+### 3. With arguments (e.g., `/reference skills` or `/reference plan mode`)
 
 Search the page index for matching titles or paths:
 
 ```bash
-grep -i "<search_term>" .agents/skills/reference/pages.md
+grep -i "<search_term>" .claude/skills/reference/pages.md
 ```
 
-If the literal term doesn't match, try related words (e.g., "funnel analysis" → grep for "data" or "analyzing").
+If the literal term doesn't match, try related words (e.g., "shipping" → grep for "git" or "code").
 
 1. **One clear match**: Open it (`open https://fullstackpm.com<path>`) and tell the student what page you opened.
 
-2. **Multiple matches**: List the top 3-5 matches with their page names and ask which one they want, as a lettered menu:
-
-```
-I found a few pages that might be what you're looking for:
-
-  (a) Building Skills
-  (b) Skill Types
-
-Reply with just the letter.
-```
+2. **Multiple matches**: List the top 3-5 matches with their page names and ask which one they want, with the AskUserQuestion tool (one option per page).
 
 3. **No matches**: Tell the student you didn't find a match and suggest they browse the home page. Open the home page.
 

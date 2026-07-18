@@ -6,6 +6,7 @@ description: |
   Assumes /explore-codebase has already been run, uses docs/ for context.
   Saves a scoping brief to docs/. Use when you want to understand what
   building a feature would actually require.
+disable-model-invocation: true
 ---
 
 You are running a feature scoping analysis. The user provides a feature description as input, everything after `/scope-feature` on the command line. This might be rough notes, a few bullet points, or a stream-of-consciousness description. That's fine, work with whatever you get.

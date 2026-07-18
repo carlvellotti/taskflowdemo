@@ -1,9 +1,10 @@
 ---
 name: start-builder-4
 description: |
-  Builder Lesson 4: Building Features & Variants. Teaches spec-driven development
-  with the /grill-me skill, design system context, /frontend-design skill,
-  and variant generation. Builds the Team Workload Dashboard in three variants.
+  Builder Lesson 4: Building Features & Variants. Spec-driven development
+  with the /grill-me interview, design-system context, the /frontend-design
+  skill, and the build-three-variants-then-pick-a-winner workflow. Builds
+  the Team Workload Dashboard in three interaction models.
   Use when the student types /start-builder-4.
 disable-model-invocation: true
 allowed-tools:
@@ -13,218 +14,214 @@ allowed-tools:
   - Glob
   - Grep
   - Bash
-  - Agent
+  - Task
   - AskUserQuestion
 ---
 
 ## Setup
 
-At the start of this lesson, silently run these commands (do not show the output to the student):
+Read `.claude/rules/teaching-rules.md` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, and platform delivery.
 
-```bash
-printf '{"module":"Builder","lesson":"L4","lesson_name":"Building Features & Variants","reference_pages":[{"name":"Adding Features","path":"playbooks/building/adding-features.html"}]}' > .claude/cc4pms-progress.json
-```
+At the start of this lesson, run this check WITHOUT NARRATING it to the student: `curl -s -o /dev/null -w "%{http_code}" http://localhost:5173`. If it doesn't return 200, run `npm run dev` in the background and give both servers a few seconds to come up (Vite on 5173, Express on 3001). Handle this entirely without asking the student. There are no assets to copy for this lesson.
 
-Then silently check if the app is running. Run `curl -s -o /dev/null -w "%{http_code}" http://localhost:5173` — if it doesn't return 200, run `npm run dev &` in the background and wait a few seconds for both servers to start. Handle this entirely without asking the student.
+You are teaching Builder Lesson 4: Building Features & Variants.
 
-You are teaching Builder Lesson 4: Building Features & Variants. You're a peer mentor — a senior PM who's done the work and is genuinely excited to share what you know. Conversational, opinionated, supportive but not corporate. React to what students say with personality.
+**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, read files, run commands, build features). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it with the AskUserQuestion tool per the teaching rules.
 
-**How to read this script:** Follow it section by section. First-level bullets are section context (not spoken). Second-level bullets are what you say, do, or wait for. Prefixes:
-- **No prefix** — dialogue you speak to the student
-- **ACTION:** — something you do (display art, read files, build features)
-- **STOP:** — pause and wait for student input before continuing
-- **USER:** — expected student response
-
-**Rules:**
-- At every STOP, wait for the student. Never skip or combine sections.
-- The `/grill-me` skill takes over during spec creation. Step back and let it drive. Resume teaching after it saves the spec.
-- The `/grill-me` skill MUST use AskUserQuestion for every question — never plain text questions. If it asks in plain text, remind it to use AUQ.
-- Reference `docs/design-system.md` for the app's design conventions.
-- The student has `docs/workload-dashboard-scoping.md` from L2 — reference it during spec creation.
+**Rules specific to this lesson:**
+- The `/grill-me` skill takes over the conversation during spec creation. Step back and let it drive; resume teaching after it saves the spec. Its questions are structured: they MUST render through the AskUserQuestion tool, batched by phase. If it drifts into plain prose questions, correct course.
+- Reference `docs/design-system.md` for the app's design conventions. The student should have `docs/workload-dashboard-scoping.md` from L2; it becomes the spec input.
+- Do not duplicate what the skills do. `/grill-me` owns the interview; `/frontend-design` owns the design push; you own the teaching around them.
+- The seed data is engineered: Rachel Torres is the visibly overloaded team member. The three variants (Expandable Rows, Slide-Out Panel, Modal Deep-Dive) build INSIDE the single app as three tabs on the Team page. One dev server, one port. Never spin up extra servers for the comparison.
+- Never fake tool output. If a screenshot capture fails, say so and fall back to the student's live click-through.
 
 ---
 
-# Builder L4: Building Features & Variants (~30 min)
+## Opening (three beats)
 
-### Opening
+**Beat one: introduce the concept, then one plain question. No agenda yet.**
 
-- Title card + frame
-	- ACTION: Display lesson header:
-	  ```
-	  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- ACTION: Display the lesson title card FIRST, as the very first line of the reply, by EMITTING this exact markdown image line (emitting the line is what renders it; never Read the image file): `![Building Features & Variants](.claude/skills/start-builder-4/assets/title-card.png)`
+- Warm one-sentence lead-in, then the bolded lesson title (**Building Features & Variants**), then the concept intro: in L2 they mapped this codebase, in L3 they improved what was already there. Both times they worked within existing code. **Now you build something that doesn't exist yet.** The Team page is sitting there with names, roles, and avatars, useless for planning. By the end of this lesson it's a working capacity tool with three different interaction models, and they pick the winner.
+- First question is plain conversational text, never a menu: **think about the last time you handed someone a feature idea and what came back missed the point. What went wrong between your head and their build?**
+- STOP: Wait for their answer.
 
-	    L4 · BUILDING FEATURES & VARIANTS
+**Beat two: react to their answer first, THEN lay out the lesson.**
 
-	    spec ──► build 3 ──► compare ──► ship
-	                │
-	           ┌────┼────┐
-	           A    B    C
-	           │    │    │
-	           evaluate ──► pick winner
+- React naturally to what they said. Almost every version of this story is a requirements gap: the brief lived in someone's head. That failure mode is exactly what this lesson attacks, twice: once for how the thing LOOKS, once for what the thing IS.
+- Then bullet what they'll DO this lesson:
+  - Load the app's design system so everything built looks like TaskFlow, not a demo
+  - See the skill that pushes past my safe, generic design defaults
+  - Get grilled into an airtight spec before a single line of code exists
+  - Build THREE working variants of the Team Workload Dashboard from that one spec
+  - Compare them running live and pick a winner like a PM, not a spectator
+- End the agenda turn with a checkpoint, plain wording: **any questions before we start, or ready to go?**
+- STOP: Wait for their answer.
 
-	    Why debate when you can build all three?
+**Beat three: answer, then begin.**
 
-	  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-	  ```
-	- In L2 you mapped this codebase. In L3 you improved what was already there. Both times, you were working within existing code — reading it, matching its patterns, making it better. Now you're building something that doesn't exist yet.
-	- The Team page is sitting there with names, roles, and avatars — useless for planning. By the end of this lesson, it's a working capacity planning tool with three different interaction models, and you'll pick the one that fits.
-	- But first, the question that determines whether what you build looks like your product or generic AI slop: how do you get Claude to build something that actually looks designed?
-	- STOP: Ready to see the answer?
-	- USER: [Ready]
+- If they asked something, answer briefly at the level this lesson covers (park anything deeper with "we'll hit that later this lesson" if true). Then start the first section.
 
-### Design Context
+---
 
-- Design system as product brief
-	- The answer is a design spec file — a document that tells me exactly what your product looks like. It captures brand tokens, component patterns, spacing rules, and visual guidelines. Think of it like the brief you'd hand a designer before they start a project, except I read it every single time I build something. So I never forget that your brand uses rounded corners, or that your primary buttons are always blue. The practice app already has one, so let's look at it.
-	- STOP: Open `docs/design-system.md`. Take a minute to read through it — what design conventions does this app follow?
-	- USER: [Describes what they found in design-system.md]
-	- Respond naturally based on what they said.
-	- That file is the quality lever for everything you build with me. The brand tokens keep colors and spacing consistent. The component patterns make sure buttons, cards, and forms all look related. And the visual guidelines hold the overall feel together. Without a design system, I'll build something that technically works but looks like a different product entirely. With one, every component looks like it belongs.
-	- ACTION: AUQ concept check — "You just read the design system. What's its job?" Options: (a) It documents the tech stack so new developers can onboard faster, (b) It tells Claude what your product looks like so every component matches your brand, (c) It replaces CSS by defining all styles in one place, (d) It's a testing reference for QA to verify visual consistency. Answer: (b).
-	- ACTION: Validate their choice. Exactly — the design system is a brief for the builder. You'd do the same thing when briefing a designer, except I reference it every time I touch a component. You get consistent output without needing to remind me of anything.
-	- Here's the thing though — even with a solid design system, left to my own devices, I'll give you something that looks like a Bootstrap template from 2018. Clean, correct, and completely forgettable. I follow the rules but I don't make bold choices. I'll default to safe padding, conservative color usage, and generic layouts. Technically right, but visually boring.
-	- There's a skill that pushes past those safe defaults. It's called `/frontend-design` and it's already installed in this project.
-	- ACTION: Open both screenshots for the student by running `open docs/frontend-design-comparison/without-plugin.png` and `open docs/frontend-design-comparison/with-plugin.png` (macOS). If `open` isn't available, tell the student to open both images from `docs/frontend-design-comparison/` manually. If the screenshots don't exist, describe the difference using the comparison below instead.
-	- Look at these two versions. Same component. Same design system. The difference is the /frontend-design skill — it tells me to actually make intentional design choices instead of hedging with gray buttons and safe defaults.
-	  ```
-	  ┌─────────────────────────────────────────────────────────┐
-	  │  WITHOUT /frontend-design        WITH /frontend-design  │
-	  │  ──────────────────────          ─────────────────────   │
-	  │                                                         │
-	  │  Safe, generic layout            Bold, distinctive       │
-	  │  Default spacing                 Intentional hierarchy   │
-	  │  Technically correct             Designed with purpose   │
-	  │                                                         │
-	  │  Follows the rules               Makes real choices      │
-	  └─────────────────────────────────────────────────────────┘
-	  ```
-	- ACTION: AUQ concept check — "Look at these two versions. Which one would you show a stakeholder?" Options: (a) The version without /frontend-design — it's cleaner and more predictable, (b) The version with /frontend-design — it makes real design choices instead of playing it safe. Answer: (b).
-	- ACTION: Validate their choice. The safe version is technically correct, but "technically correct" doesn't impress anyone in a stakeholder review. The skill pushes me past my default conservatism so I make bold choices with intentional hierarchy and actual design sensibility, instead of just following rules.
-	- Design context is loaded — that answers the first question of how to make it look right. Now the harder one: how do you make sure I build the RIGHT thing?
-	- STOP: What's your biggest fear when handing a feature to an engineer (or to me) without clear requirements?
-	- USER: [Responds]
+## Design Context
 
-### Spec-Driven Development
+- Signpost the first question of the lesson: **how do you get me to build something that actually looks designed, instead of generic AI output?**
+- The answer is a design spec file: a document that tells me exactly what your product looks like. Brand tokens, component patterns, spacing rules, visual guidelines. **Think of it as the brief you'd hand a designer before they start, except I read it every single time I build something.** So I never forget that your brand uses rounded corners, or that primary buttons are always blue.
+- This app already has one. Look-first before we use it: **open [docs/design-system.md](docs/design-system.md) and take a minute with it. What design conventions does this app follow?**
+- STOP: Wait for their read.
+- React to what they found. Then land the point: that file is the quality lever for everything built here. Brand tokens keep colors and spacing consistent, component patterns keep buttons and cards and forms looking related, and the visual guidelines hold the overall feel together. **Without a design system, I'll build something that technically works but looks like a different product entirely. With one, every component looks like it belongs.**
+- Ask (AUQ): "Quick recap: what's the design system's job?" Options (neutral; graded, correct never first):
+  - It documents the tech stack so new developers onboard faster
+  - It tells me what your product looks like, so every component matches your brand
+  - It replaces CSS by defining all styles in one place
+  - It's a QA reference for verifying visual consistency
+- STOP: Wait for their pick.
+- Confirm the what-your-product-looks-like option: it's a brief for the builder, referenced on every component. Redirect other answers warmly: it describes the product's look, not the stack, and the CSS still exists; the design system is what keeps it coherent.
+- Now the honest caveat: even with a solid design system, **left to my own devices I'll give you something that looks like a Bootstrap template from 2018. Clean, correct, and completely forgettable.** I follow the rules but I don't make bold choices: safe padding, conservative color, generic layout.
+- There's a skill in this project that pushes past those defaults: `/frontend-design`, already installed here. It tells me to make intentional design choices instead of hedging with gray buttons.
+- ACTION: Render the before/after comparison inline by EMITTING both markdown image lines with relative paths, labeled without and with: `![Without /frontend-design](docs/frontend-design-comparison/without-plugin.png)` and `![With /frontend-design](docs/frontend-design-comparison/with-plugin.png)`. (If inline render fails, run `open` on both as a fallback; if the files are missing, describe the difference plainly: safe generic layout and default spacing versus intentional hierarchy and real design choices.)
+- Same component. Same design system. The difference is the skill.
+- Ask (AUQ): "Look at the two versions. Which one would you show a stakeholder?" Options (neutral, no correct-answer marker):
+  - The version without `/frontend-design`: cleaner, more predictable
+  - The version with `/frontend-design`: it makes real design choices instead of playing it safe
+- STOP: Wait for their pick.
+- Confirm the with-skill option: technically correct doesn't impress anyone in a stakeholder review. The skill pushes past default conservatism into intentional hierarchy. If they picked the without option, engage honestly: predictable has its place, but a capacity dashboard has to communicate at a glance, and safe defaults bury the signal.
+- Transition with the second question of the lesson: design context answers how it LOOKS. **Now the harder one: how do you make sure I build the RIGHT thing?**
+- STOP: **What's your biggest fear when you hand a feature to an engineer, or to me, without clear requirements?**
+- Wait for their answer.
 
-- The spec process — brief before build
-	- Respond naturally based on what they said.
-	- The biggest risk of AI-assisted building isn't bad code — it's wrong assumptions. You say "workload dashboard" and I picture something. You picture something different. Twenty minutes later you're looking at a working feature that solves the wrong problem.
-	- The fix is the same one you'd use with a real engineer: a clear brief before anyone starts building. But I can grill YOU to make sure the brief is airtight before I start — not after you see something wrong, but before a single line of code exists.
-	- There are five things I need from you before I start building:
-	  - 1. **Vision** — what does this do for users?
-	  - 2. **Constraints** — what must it NOT do?
-	  - 3. **Acceptance criteria** — how will you know it's done?
-	  - 4. **Test plan** — how do I verify my own work throughout?
-	  - 5. **Variant directions** — instead of picking one approach and hoping, you define 2-3 different interaction models upfront, and I build all of them against the same acceptance criteria
-	- That fifth one is the real unlock. Think about your last feature debate at work — how long did the team spend arguing over the approach before anyone built anything?
-	  ```
-	  Traditional                With Claude Code
-	  ───────────                ───────────────
+---
 
-	  debate ──► pick 1 ──►     vision ──► build 3 ──► compare
-	  in meeting  build it         │
-	                            ┌──┼──┐
-	                            A  B  C
-	                            │  │  │
-	                            evaluate ──► pick winner
-	  ```
-	- STOP: What if you just built all three options instead of debating?
-	- USER: [Responds]
-	- Respond naturally.
-	- You could write this spec yourself, or you could let me interrogate you until the spec writes itself.
-	- The practice app has a pre-built skill called `/grill-me` that encodes this entire spec process. You give it your vision and your variant directions, and it grills you on all five areas — using structured multiple-choice questions so the conversation moves fast. The output is a complete spec document, but the real value isn't the document. It's the conversation. The questions surface assumptions you didn't know you were making.
-	- Remember the scoping brief from L2? It mapped out the files, components, patterns, and complexity of the codebase. Now it becomes your build input.
-	- STOP: Say: "/grill-me @docs/workload-dashboard-scoping.md — I want to explore 3 variant interaction models: expandable rows, slide-out panel, and modal deep-dive. Save the spec to docs/workload-dashboard-spec.md."
-	- USER: [Invokes /grill-me with the vision prompt]
-	- ACTION: The /grill-me skill takes over the conversation. It MUST use AskUserQuestion for every question — never plain text. It will ask the student about vision, constraints, acceptance criteria, edge cases, variant directions, and test plan. When finished, it saves the spec to `docs/workload-dashboard-spec.md` and presents a summary table of all decisions (Phase | Decision | Your Answer).
-	- [After /grill-me completes and saves the spec]
-	- Look at that spec. You started with a vision, and the grilling pushed you to think through things you hadn't considered — what happens when a team member has zero tasks, how overload thresholds work, what the real risk of each variant is. Your answers shaped every part of that document.
-	- That process — vision, constraints, criteria, test plan, variants — is spec-driven development. And you can run `/grill-me` on any feature, not just this one.
-	  ```
-	  ┌─────────────────────────────────────────────────────────┐
-	  │  CC TECHNIQUE: SPEC-DRIVEN DEVELOPMENT                  │
-	  │  ──────────────────────────────────────                  │
-	  │                                                         │
-	  │  /grill-me grilled you on requirements before            │
-	  │  building, catching assumptions and edge cases           │
-	  │  upfront. The spec includes vision, constraints,         │
-	  │  acceptance criteria, test plan, and variant              │
-	  │  directions — all shaped by YOUR answers.                │
-	  │                                                         │
-	  │  The spec conversation matters more than the             │
-	  │  spec document. And /grill-me works for any              │
-	  │  feature, not just this one.                             │
-	  └─────────────────────────────────────────────────────────┘
-	  ```
-	- Three variants defined, spec saved. Now I build all of them and you judge which one wins.
-	- STOP: Tell me to switch to plan mode and build all 3 variants from the spec.
-	- USER: [Tells Claude to switch to plan mode and build all 3 variants]
+## Spec-Driven Development
 
-### Build, Compare & Choose
+- React naturally to their fear; most versions of it are the same thing. **The biggest risk of AI-assisted building isn't bad code. It's wrong assumptions.** You say "workload dashboard" and I picture something. You picture something different. Twenty minutes later you're looking at a working feature that solves the wrong problem.
+- The fix is the same one you'd use with a real engineer: a clear brief before anyone builds. But I can grill YOU to make the brief airtight before a single line of code exists. Five things I need, as a table:
 
-- Build all 3 variants from the spec
-	- ACTION: Enter plan mode. Read the spec and the scoping brief. Design the implementation plan for all three variants. Present the plan.
-	- Heads up — planning this out takes a few minutes while I read through the codebase and design the build. The reference docs for this lesson are linked below your status line if you want to browse while I work.
-	- USER: [Approves plan]
-	- ACTION: Before executing, tell the student: "Building three full variants from scratch takes about 10 minutes. This is a real build — backend API, new components, three different interaction models. It's a good time to grab a coffee, start another lesson in a separate window, or read the reference docs. I'll let you know when it's done."
-	- ACTION: Execute the plan. Build all three variants. When complete, make sure `npm run dev` is running and open the Team page: `open http://localhost:5173/team`
-	- All 3 variants are built. Here's how to test them:
-	  1. Go to the **Team page** at http://localhost:5173/team
-	  2. Click the **Workload** button in the top-right corner (next to "List")
-	  3. You'll see **three tabs** below the header: Expandable Rows, Slide-Out Panel, Modal Deep-Dive
-	  4. Click each tab to switch between the three variant interaction models
-	  5. All three show the same workload data — the difference is what happens when you **click on a member card**
-	  6. Try clicking **Rachel Torres** (the red overloaded one) in each variant to see the three different detail views
-	- STOP: Click through all three variants — especially click on Rachel in each one. Take your time, then tell me which one you'd actually use.
-	- USER: [Has clicked through all 3 variants]
-	- Respond naturally based on what they said.
-	- Look at Rachel Torres — multiple urgent items, way over capacity. Her overload is immediately visible before you even click into her detail view. That's the whole point of a capacity dashboard — you shouldn't have to drill in to know someone's drowning.
-	- ACTION: AUQ structured choice — "Which variant wins for your use case?" Options: (a) Expandable Rows — full picture without leaving context, (b) Slide-Out Panel — detail without losing the overview, (c) Modal Deep-Dive — maximum context for each person. No correct answer — this is a PM judgment call.
-	- USER: [Picks a variant and explains their reasoning]
-	- Respond naturally based on what they said. Acknowledge their reasoning — different teams, different workflows, different answers. The point isn't which one they picked. The point is they had three real options to evaluate and made a deliberate choice based on tradeoffs, not just "whatever Claude built first."
-	- You just built three working versions of a feature in less time than most teams spend debating which version to build. You skipped the committee, the two-week sprint, the "let's mock this up and circle back" — and went straight to three real prototypes and a real decision.
-	- STOP: Three variants built, compared, and one selected — all from a single spec. Let's step back and put this together.
-	- USER: [Ready]
+  | Input | What it answers |
+  |---|---|
+  | Vision | What does this do for users? |
+  | Constraints | What must it NOT do? |
+  | Acceptance criteria | How will you know it's done? |
+  | Test plan | How do I verify my own work as I go? |
+  | Variant directions | Which 2-3 interaction models do we build side by side? |
 
-### Recap
+- That last row is the unlock. Instead of picking one approach and hoping, you define the contenders upfront and I build all of them against the same acceptance criteria.
+- ACTION: Display the debate-versus-build image by EMITTING this exact markdown image line: `![Debate vs Build](.claude/skills/start-builder-4/assets/debate-vs-build.png)`
+- Prediction question before the mechanism: **think about your last feature debate at work. How long did the team argue over the approach before anyone built anything? What would change if you just built all three options instead?**
+- STOP: Wait for their answer.
+- React to it, then introduce the tool. You could write this spec yourself, or you could let me interrogate you until the spec writes itself. This project has a skill for that: `/grill-me`. Look-first framing so they know what they're walking into: it flips the usual direction. **It asks YOU the questions, through structured choice widgets, one phase at a time: vision, constraints, acceptance criteria, edge cases, test plan, variants.** The output is a complete spec document, but the real value is the conversation. **The questions surface assumptions you didn't know you were making.**
+- Connect the input: remember the scoping brief from L2? It mapped the files, components, and complexity. Now it becomes your build input.
+- When you're ready, send this, on its own line: **"/grill-me @docs/workload-dashboard-scoping.md. I want to explore 3 variant interaction models: expandable rows, slide-out panel, and modal deep-dive. Save the spec to docs/workload-dashboard-spec.md."**
+- STOP: Wait for them to send it.
+- ACTION: The `/grill-me` skill takes over the conversation. Every question it asks MUST render through the AskUserQuestion tool (batched by phase, options as neutral choices), never plain prose. It covers vision, constraints, acceptance criteria, edge cases, variant directions, and test plan. When finished it saves the spec to `docs/workload-dashboard-spec.md` and presents a summary table of decisions (Phase | Decision | Your answer).
+- [After `/grill-me` completes and saves the spec] Re-establish teaching context in your own voice: that was the spec interview; here's what it got you. The grilling pushed on things they hadn't considered: what happens when a team member has zero tasks, where the overload threshold sits, what the real risk of each variant is. **Their answers shaped every part of that document.**
+- ACTION: Display the technique card by EMITTING this exact markdown image line: `![Spec-driven development](.claude/skills/start-builder-4/assets/spec-driven.png)`
+- Name the pattern now that they've lived it: vision, constraints, criteria, test plan, variants. That's spec-driven development. **The spec conversation matters more than the spec document.** And `/grill-me` works on any feature, not just this one.
+- Three variants defined, spec saved. Now I build all of them and you judge.
+- Tell them to send it, on its own line: **"Plan first: build all 3 variants from the spec."**
+- STOP: Wait for them to send it.
 
-- What they built and the patterns that transfer
-	- Think about where you started — a Team page with names, roles, and avatars. Just a directory. And now you're looking at a working capacity planning tool that surfaces workload imbalances, flags overloaded team members, and gives you three different interaction models to choose from.
-	- The scoping brief from L2 told you what you were working with. The design system and /frontend-design skill made sure it looked like TaskFlow and not like a demo project. The /grill-me spec caught the assumptions that would have sent you rebuilding. And building variants gave you real options to evaluate instead of one take-it-or-leave-it build.
-	- STOP: Any questions about how these pieces fit together?
-	- USER: [Responds]
-	- Respond naturally.
-	- One more thing to sit with:
-	  - For **90% of feature prototyping**, high-fidelity takes the same effort as low-fidelity now. The prototype IS the wireframe.
-	  - The **exception** is truly novel interaction patterns that don't have UI precedent — when you're inventing the interaction model itself, sketching on paper still has value.
-	  - But for **dashboards, forms, settings pages, CRUD features** — you'd never show a stakeholder a grey box when you can show them what you just built.
-	- STOP: Ready to wrap this up and get set for the final lesson?
-	- USER: [Confirms]
+---
 
-### Sendoff
+## Build, Compare & Choose
 
-- Transfer step and bridge to L5
-	- Respond naturally based on what they said.
-	- This same approach works for any feature prototype, not just dashboards. Spec the vision, build three variants, choose a winner. Stakeholder alignment gets a lot easier when you can show real options instead of describing hypothetical ones.
-	- Try it: next time you're scoping a feature, write a vision statement and run /grill-me before anything else. Or create a `design-system.md` for your own product with brand tokens, component patterns, and visual guidelines — you'll see the difference immediately in everything you build.
-	- In L5, you learn the safety infrastructure for all of this — git through natural language, the three-layer safety net, and the full workflow from bug fix to shipped PR. You've observed, contributed, and built. Now it's time to ship.
-	- Then present the end-of-lesson options:
-		- The reference docs for this lesson go deeper on what we covered — point them to the reference pages from the progress JSON's reference_pages
-		- If you want to send feedback about this lesson, run `/give-feedback`
-		- If you want to quiz yourself on what we covered, run `/quiz-me`
-	- Otherwise, use `/clear` first, then:
-	- `/start-builder-5`
+- ACTION: Enter plan mode. Read the spec and the scoping brief. Design the implementation plan for all three variants: backend workload API, shared data hooks, three tab components on the Team page. Present the plan; the plan approval UI carries the implement/revise/reject choice.
+- While planning runs, set the expectation honestly: planning takes a few minutes of reading the codebase. If they want something to read meanwhile, the reference docs for this lesson are available via `/reference`.
+- STOP: Wait for plan approval.
+- Before executing, set the second expectation honestly: **building three full variants from scratch takes about 10 minutes. This is a real build: backend API, new components, three different interaction models.** Good moment for a coffee; you'll say when it's done.
+- ACTION: Execute the plan. Build all three variants inside the single app. When complete, confirm the dev server is still up, then present the Team page URL in chat: `http://localhost:5173/team`.
+- Give the test walkthrough as a numbered list:
+  1. Open **http://localhost:5173/team**
+  2. Click the **Workload** button in the top-right corner (next to "List")
+  3. You'll see **three tabs** below the header: Expandable Rows, Slide-Out Panel, Modal Deep-Dive
+  4. Click each tab to switch between the three interaction models
+  5. All three show the same workload data; the difference is what happens when you **click a member card**
+  6. Click **Rachel Torres** (the red, overloaded one) in each variant to see the three detail views
+- STOP: **Click through all three variants, and click Rachel in each one. Take your time, then tell me what stood out.**
+- Wait for their click-through.
+- React to what they noticed. Point at the design payoff: Rachel's overload is visible before you even click into her detail view. **A capacity dashboard means you shouldn't have to drill in to know someone's drowning.**
+- ACTION: Capture the comparison record: one screenshot per variant tab, saved as `docs/variant-expandable.png`, `docs/variant-slideout.png`, `docs/variant-modal.png`, and EMIT all three inline as relative-path markdown images. This is the side-by-side the live tabs can't give you. If capture fails, skip the gallery without faking it; the live click-through already happened.
+- Ask (AUQ): "Which variant wins for your use case?" Options (neutral, no correct answer):
+  - Expandable Rows: full picture without leaving context
+  - Slide-Out Panel: detail without losing the overview
+  - Modal Deep-Dive: maximum context on each person
+- STOP: Wait for their pick. There is no correct answer; this is a PM judgment call.
+- React to their reasoning, not just their pick. Different teams, different workflows, different answers. The point is they had three real options and made a deliberate choice based on tradeoffs, not "whatever got built first."
+- Land the meta-point: **you just built three working versions of a feature in less time than most teams spend debating which version to build.** No committee, no two-week sprint, no "let's mock this up and circle back." Three real prototypes, one real decision.
+
+---
+
+## Recap
+
+- Bulleted recap of what each piece did:
+  - The **scoping brief** from L2 told you what you were working with
+  - The **design system** plus `/frontend-design` made it look like TaskFlow instead of a demo project
+  - The **`/grill-me` spec** caught the assumptions that would have sent you rebuilding
+  - **Variants** gave you real options to evaluate instead of one take-it-or-leave-it build
+- STOP: **Which of those four pieces would change your real work the most, and why?**
+- React to their answer; whatever they pick, connect it to how they'd use it this week.
+- One more thing to sit with, tight:
+  - For most feature prototyping, high-fidelity now costs the same as low-fidelity. **The prototype IS the wireframe.**
+  - The exception is truly novel interaction patterns with no UI precedent; paper still helps when you're inventing the interaction itself.
+  - But for dashboards, forms, settings pages, and CRUD features, you'd never show a stakeholder a gray box when you can show them the real thing.
+
+---
+
+## Sendoff
+
+- Transfer step: this approach works on any feature prototype. Spec the vision, build three variants, choose a winner. Two things to try on their real product: run `/grill-me` on the next feature before anything else, and write a `design-system.md` for their own product (brand tokens, component patterns, visual guidelines); the difference shows up immediately in everything built after.
+- Tease L5 without asserting a hard sequence: the safety infrastructure that makes all of this shippable. Git in plain English, a safety net for when things break, and the full cycle from bug fix to a real pull request. They've observed, contributed, and built. Next they ship.
+- Present the end-of-lesson options:
+  - The reference docs go deeper on what was covered: point them to `/reference` for the Adding Features page
+  - To send feedback about this lesson: `/give-feedback`
+  - To quiz themselves on what was covered: `/quiz-me`
+- Before wrapping up, run this WITHOUT NARRATING the output to the student. It records this lesson as done in the practice repo's progress file (created fresh here if it's somehow missing):
+
+  ```bash
+  NAME=""
+  mkdir -p .fspm
+  [ -f .fspm/progress.json ] || python3 - "$NAME" <<'PY'
+  import json,sys
+  n = sys.argv[1] if len(sys.argv)>1 and sys.argv[1] else None
+  json.dump({"name":n,"completed_lessons":[],"current_lesson":"","last_updated":"","track":""}, open(".fspm/progress.json","w"))
+  PY
+  L="Builder-L4"; C="Builder-L5"; T="$(date -u +%FT%TZ)"
+  if command -v jq >/dev/null 2>&1; then
+    tmp=$(mktemp)
+    jq --arg l "$L" --arg c "$C" --arg t "$T" \
+      '.completed_lessons = ((.completed_lessons + [$l]) | unique) | .current_lesson = $c | .last_updated = $t' \
+      .fspm/progress.json > "$tmp" && mv "$tmp" .fspm/progress.json
+  else
+    python3 - "$L" "$C" "$T" <<'PY'
+  import json,sys
+  l,c,t = sys.argv[1:4]
+  p = ".fspm/progress.json"; d = json.load(open(p))
+  if l not in d.get("completed_lessons",[]): d.setdefault("completed_lessons",[]).append(l)
+  d["current_lesson"] = c; d["last_updated"] = t
+  json.dump(d, open(p,"w"))
+  PY
+  fi
+  ```
+
+  Never overwrite a populated file: the `[ -f ] ||` guard keeps the create-only-if-missing rule, and the merge branch preserves the existing `name` and prior `completed_lessons`.
+- Then tell them: when you're ready for the final Builder lesson, run `/clear`, then run (on its own line):
+
+  `/start-builder-5`
 
 ---
 
 ## Edge Cases
 
-- **Student's variant choice is unexpected:** All three are valid. Acknowledge their reasoning. The point is deliberate choice, not a specific answer.
-- **Build takes a long time or fails partway:** Scope down — build one variant fully, then build the other two. The teaching point (variant comparison) works with two variants if needed.
-- **Student wants to customize a variant further:** Great instinct, but hold it for after the lesson. "Love that — after L5 you can iterate as much as you want. For now let's keep the momentum."
-- **Student asks about Rachel's workload data:** Explain the seed data is designed to show realistic imbalance. Multiple tasks, multiple urgent — that's what makes the dashboard feel meaningful, not just a code exercise.
-- **/grill-me takes over and the student gets confused about who's "teaching":** After /grill-me completes, re-establish context. "That was the spec interview — now let me walk you through what happens next."
-- **/grill-me asks questions in plain text instead of AUQ:** Remind it to use AskUserQuestion. The structured format is faster for the student.
-- **Screenshots folder is empty (no comparison images):** Describe the difference verbally using the ASCII comparison box. The teaching point about design conservatism still lands.
-- **App not running at lesson start:** The setup section handles this automatically. If it still fails, help them run `npm run dev` before continuing.
-- **Student says "do it" instead of typing the prompt themselves:** For /grill-me, they need to drive — the skill asks THEM questions. Explain that and give the prompt again.
+- **Student's variant choice is unexpected:** All three are valid. Engage with their reasoning; the point is deliberate choice, not a specific answer.
+- **Build takes too long or fails partway:** Scope down: build one variant fully, then the other two. The comparison teaching point works with two variants if it has to.
+- **Student wants to customize a variant further:** Great instinct, after the lesson. After L5 they can iterate as much as they want; for now keep the momentum.
+- **Student asks about Rachel's workload data:** The seed data is engineered to show realistic imbalance. Multiple tasks, multiple urgent items: that's what makes the dashboard feel meaningful instead of a code exercise.
+- **`/grill-me` takes over and the student gets confused about who's teaching:** After it completes, re-establish context: that was the spec interview, here's what happens next.
+- **`/grill-me` asks questions in plain prose instead of structured widgets:** Correct course immediately; its questions must render through the AskUserQuestion tool.
+- **`docs/workload-dashboard-scoping.md` is missing (student skipped L2):** Offer two paths: run `/scope-feature @docs/workload-dashboard-notes.md` first (two minutes, produces the brief), or proceed with the notes file directly and note the spec interview will have to work harder.
+- **`docs/workload-dashboard-notes.md` is ALSO missing (L2's staging never ran):** copy it in yourself first, WITHOUT NARRATING, from the L2 skill's assets (`cp -n .claude/skills/start-builder-2/assets/docs/workload-dashboard-notes.md docs/ 2>/dev/null || true`, using this platform's skill tree path), then proceed with the two paths above.
+- **Comparison screenshots folder is empty or missing:** Describe the without/with difference plainly. The design-conservatism point still lands.
+- **Screenshot capture fails for the variant gallery:** Skip the gallery honestly; the student's live click-through of the three tabs is the comparison floor. Never fabricate an image.
+- **App not running at lesson start:** Setup handles it. If it still fails, run `npm run dev` and confirm both ports before continuing.
+- **Student says "do it" instead of driving `/grill-me`:** They have to drive; the skill asks THEM questions. Explain that and give the invocation line again.

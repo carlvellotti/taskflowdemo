@@ -7,17 +7,11 @@ description: |
   request. The Builder module capstone.
   Use when the student types /start-builder-5.
 disable-model-invocation: true
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - AskUserQuestion
 ---
 
 ## Setup
 
-Read `.claude/rules/teaching-rules.md` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, and platform delivery.
+Read `.cursor/rules/teaching-rules.mdc` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, the native question UI, image display, file-path links.
 
 This lesson stages no assets. At the start of the lesson, run this WITHOUT NARRATING it to the student (it confirms the app is up, starting it in the background if not):
 
@@ -30,14 +24,14 @@ fi
 
 You are teaching Builder Lesson 5: Git, Safety & Shipping.
 
-**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, run git commands, take screenshots). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it with the AskUserQuestion tool per the teaching rules.
+**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, run git commands, take screenshots). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it through the native question UI per the teaching rules.
 
 **Rules specific to this lesson:**
 - Several beats depend on the STUDENT sending the prompt first. Wait for their request before acting; never run a git operation they haven't asked for.
 - For git operations, translate the student's natural language into the right commands. Don't explain git syntax unless they ask.
 - The recovery demo depends on a commit existing FIRST. Never run the break demo before the branch-and-commit beat has completed.
 - When creating the PR, use `gh pr create` with a structured description (Context / Change / Testing).
-- Never present chat rewind, Esc-Esc, or conversation forking as a way to recover files. File recovery in this lesson is git, full stop.
+- Never present chat rewind, Revert, or conversation forking as the taught way to recover files. File recovery in this lesson is git, full stop.
 
 ---
 
@@ -45,9 +39,9 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 
 **Beat one: introduce the concept, then one plain question. No agenda yet.**
 
-- ACTION: Display the lesson title card FIRST, as the very first line of the reply, by EMITTING this exact markdown image line (emitting the line is what renders it; never Read the image file): `![Git, Safety & Shipping](.claude/skills/start-builder-5/assets/title-card.png)`
+- ACTION: Display the lesson title card FIRST, as the very first line of the reply, before any prose, by EMITTING a markdown image line (emitting the line is what renders it; never Read the image file). Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-5/assets/title-card.png`); if that absolute path contains spaces, first run `mkdir -p /tmp/cc4pms-assets && cp <file> /tmp/cc4pms-assets/builder5-title-card.png` and emit the /tmp path instead.
 - Warm one-sentence lead-in, then the bolded lesson title (**Git, Safety & Shipping**), then the concept intro: everything they've done in this module, every improvement from L3, every variant from L4, **exists right now as unsaved changes on your machine. If your laptop died tonight, all of it would be gone.** This lesson fixes that, and then goes one step further: their work ends up shipped, on GitHub, in front of a reviewer.
-- First question is plain conversational text, never a menu: **have you used git before, even a little? Cloned a repo, seen a pull request, anything?**
+- First question is plain conversational text, never a structured question: **have you used git before, even a little? Cloned a repo, seen a pull request, anything?**
 - STOP: Wait for their answer.
 
 **Beat two: react to their answer first, THEN lay out the lesson.**
@@ -79,16 +73,16 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 - React to their guess and teach against it. **Sharing and finishing** (the remote half):
   - **Pushing sends your branch to GitHub. That's your cloud backup.** The work now exists in two places.
   - **A pull request is tagging a teammate and saying "here's what I changed, can you review it before we merge it in?"** The reviewer comments or approves, and **merging accepts the changes into the official version.**
-- ACTION: Display the local-vs-remote workflow image by EMITTING this exact markdown image line: `![Local vs remote](.claude/skills/start-builder-5/assets/local-remote.png)`
+- ACTION: Display the local-vs-remote workflow image by EMITTING a markdown image line. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-5/assets/local-remote.png`); if the path contains spaces, cp to `/tmp/cc4pms-assets/builder5-local-remote.png` first and emit the /tmp path.
 - Land the whole shape in one line: **branch, change, commit, push, PR, review, merge. Every engineering team and every open-source project on GitHub runs this same flow.**
 - And the relief: **you don't need to memorize commands. Say "create a branch" or "commit this" in plain English and I handle the syntax.**
-- Ask (AUQ): "Quick recap: in the git workflow, what's the equivalent of tagging a teammate and saying 'can you review this before I publish?'" Options (neutral; graded, correct never first):
+- Ask (AUQ): "Quick recap: in the git workflow, what's the equivalent of tagging a teammate and saying 'can you review this before I publish?'" Options as neutral bullets:
   - A commit
   - A merge
   - A pull request
   - A push
-- STOP: Wait for their pick.
-- If they picked the pull request: confirm crisply. **A pull request is literally a request for review.** You're saying "here's what I changed and why, does this look good?" That's stakeholder communication, and PMs are already good at it. If wrong: correct warmly using the same line, then move on.
+- STOP: Wait for their pick. (Graded: pull request is correct; never hint at it.)
+- If they picked pull request: confirm crisply. **A pull request is literally a request for review.** You're saying "here's what I changed and why, does this look good?" That's stakeholder communication, and PMs are already good at it. If wrong: correct warmly using the same line, then move on.
 
 ---
 
@@ -120,7 +114,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 - STOP: Wait for them to send it (any phrasing that means "restore the file" counts).
 - ACTION: Run `git checkout -- client/src/pages/Dashboard.jsx` and confirm the file is back.
 - STOP: **Check the app again. Is it back?**
-- Land the teaching, and be precise about the mechanism: **the recovery worked because a commit existed. `git checkout` restores any file to its last committed state, no matter how it got broken.** Deleted, mangled by a bad edit, overwritten: same one-line recovery. That's why the commit came first.
+- Land the teaching, and be precise about the mechanism: **the recovery worked because a commit existed. `git checkout` restores any file to its last committed state, no matter how it got broken.** Deleted, mangled by a bad edit, overwritten: same one-line recovery. That's why the commit came first. (One honest aside if it comes up: Cursor's own Revert control can also roll back a conversation's file changes, but git is the recovery that works everywhere, on any change, no matter how it happened. That's the one to trust.)
 - The payoff line: **the fear of breaking something is the number one barrier to PMs touching code. You just broke the app and recovered it in one sentence, so that fear can go away now.**
 
 ---
@@ -144,12 +138,12 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 ## Bug Fix
 
 - Frame the real-world shape: bugs arrive as tickets, Slack messages from QA, requests from ops. They've known about this one since L1: Settings doesn't load from the sidebar. Time to fix it, and this time an engineer will end up reviewing the fix.
-- Tell them to send this, on its own line: **"Plan first: tell me why the Settings page is blank when I click it in the sidebar. Make a plan to fix it, including how you'll verify it with a screenshot."**
+- Two steps: first have them type `/plan` to switch into Plan Mode, then send this, on its own line: **"Tell me why the Settings page is blank when I click it in the sidebar. Make a plan to fix it, including how you'll verify it with a screenshot."**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode, investigate the Settings navigation issue, and identify the root cause: a NavLink path mismatch (`/setting` vs `/settings`), one character off. Present the plan: what's wrong, the one file to change, and the verification step (screenshot of the fixed page plus a live click). Wait for approval on the plan approval UI.
+- ACTION: In plan mode, investigate the Settings navigation issue and identify the root cause: a NavLink path mismatch (`/setting` vs `/settings`), one character off. Present the plan: what's wrong, the one file to change, and the verification step (screenshot of the fixed page plus a live click). Wait for the plan approval.
 - While presenting the diagnosis, land the line: **the Settings page has been broken this whole time because of a single missing letter.** This is why engineers have trust issues with "small changes." And the student just found it in under a minute.
-- STOP: Wait for them to approve the plan.
-- ACTION: Apply the fix. Then take a screenshot of the fixed Settings page, save it as `docs/settings-fixed.png`, and EMIT it inline as a relative-path markdown image (`![Settings fixed](docs/settings-fixed.png)`). (The same loop works anywhere with the Playwright CLI, `npx playwright screenshot <url> <file>`, which is the portable version of what just happened.)
+- STOP: Wait for them to approve the plan from the plan card.
+- ACTION: Apply the fix. Then take a screenshot of the fixed Settings page with the Playwright CLI (`npx playwright screenshot http://localhost:5173/settings /tmp/cc4pms-assets/settings-fixed.png`, creating `/tmp/cc4pms-assets` first; run `npx playwright install chromium` first if the browser is missing, saying so in one line) and EMIT it inline as a markdown image using the /tmp absolute path. If the capture fails, say so plainly and lean on the student's live click; never describe a screenshot that wasn't taken.
 - STOP: **The screenshot says it works. Trust it after you've seen it yourself: click Settings in the sidebar at [http://localhost:5173](http://localhost:5173). Does it load?**
 - React to their confirmation, then lock it in. Tell them to send this, on its own line: **"Commit this fix"**
 - STOP: Wait for them to send it.
@@ -172,12 +166,12 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
   | Testing | How did you verify it? |
   | Screenshots | Before and after, visual proof (optional but nice) |
 
-- ACTION: Display the PR template image by EMITTING this exact markdown image line: `![PR template](.claude/skills/start-builder-5/assets/pr-template.png)`
+- ACTION: Display the PR template image by EMITTING a markdown image line. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-5/assets/pr-template.png`); if the path contains spaces, cp to `/tmp/cc4pms-assets/builder5-pr-template.png` first and emit the /tmp path.
 - The competitive edge, near-verbatim: **engineers love PRs with clear context, because most PRs don't have it. Yours will stand out.**
 - Tell them to send this, on its own line: **"Push the latest commit and create a PR. Write a description with context for everything on this branch: the L3 improvements, the L4 dashboard, and the bug fix."**
 - STOP: Wait for them to send it.
-- ACTION: Push the branch, then create the PR with `gh pr create` using a structured Context / Change / Testing description covering the L3 improvements, the L4 dashboard, and the Settings fix. Present the PR URL as a link in chat, then open it in their browser for them (`open <pr-url>`); github.com shows it signed in as them.
-- Tell them what they're looking at: exactly what a reviewing engineer sees: the description, the diff, the whole reviewer view.
+- ACTION: Push the branch, then create the PR with `gh pr create` using a structured Context / Change / Testing description covering the L3 improvements, the L4 dashboard, and the Settings fix. Then open the PR in their browser FOR them by running `open <pr-url>` (the raw link in chat isn't reliably clickable here, and the in-app view doesn't load PR diffs; the real browser shows the authed reviewer view). Also state the URL in plain text so they have it.
+- Tell them what they're looking at: the PR page opened in their browser, signed in as them, showing exactly what a reviewing engineer sees: the description, the diff, the whole reviewer view.
 - STOP: **Look around your PR: that's your contribution the way your engineering team would see it. What do you think?**
 - React to their reaction, then land the shape of what they ran: **branch, change, commit, push, PR, all in natural language.** This same flow works on any GitHub project: their company's product, an open-source tool, a side project. Find something to improve, branch, fix, commit, push, PR.
 
@@ -205,7 +199,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
   - **L3**: crossed the line. Three real improvements, each following the codebase's own patterns, each one looking native
   - **L4**: built something new. The Team Workload Dashboard, from spec to three working variants to a deliberate winner, in under half an hour
   - **L5**: broke the app on purpose and laughed about it. Saved everything, fixed a real bug, and shipped it all through a real PR
-- ACTION: Display the module completion image by EMITTING this exact markdown image line: `![Builder module complete](.claude/skills/start-builder-5/assets/module-complete.png)`
+- ACTION: Display the module completion image by EMITTING a markdown image line. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-5/assets/module-complete.png`); if the path contains spaces, cp to `/tmp/cc4pms-assets/builder5-module-complete.png` first and emit the /tmp path.
 - Let it breathe for one beat: four lessons ago they were cloning a repo for the first time, and now there's a PR on GitHub with their name on it.
 - STOP: **What's the one thing from this module that changed how you think about working with code?**
 - React genuinely to what they say.
@@ -247,7 +241,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
   ```
 
   `current_lesson` is the literal sentinel `"choose-next"`: Builder is self-contained and never auto-chains into another module. The module picker below is a plain list of handles, each on its own line; it is never rendered as a structured question. The `[ -f ] ||` guard keeps the create-only-if-missing rule; the merge branch preserves any existing `name` and prior `completed_lessons`.
-- Close by telling them: head back to the course project window, start a fresh session there, and run whichever module command they picked, on its own line, e.g.:
+- Close by telling them: head back to the course project window, start a New Agent there, and run whichever module command they picked, on its own line, e.g.:
 
   `/start-data-1`
 
@@ -258,10 +252,11 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 - **The restore doesn't bring the file back:** Check `git status` and confirm the commit exists (`git log --oneline -3`). Re-run `git checkout -- client/src/pages/Dashboard.jsx` with the full path. The commit from the Save Your Work beat guarantees the snapshot is there; if the student somehow skipped that beat, commit whatever remains first, restore from the clone's original state with `git checkout main -- client/src/pages/Dashboard.jsx`, and note plainly what happened.
 - **Student already knows git well:** Acknowledge and move fast. The concepts section becomes a quick review; the PR description craft and the reviewer view are where it gets interesting for them.
 - **Push fails:** Most likely the remote still points at the course's repo (no write access, and that failure is expected: it's exactly why they create their own repo) or auth. Check `git remote -v`, re-run the repo-create beat if needed, and for auth, run the sign-in FOR them (never have the student type a terminal command): `echo | gh auth login --hostname github.com --git-protocol https --web --skip-ssh-key > /tmp/gh-login.out 2>&1 &` then read the one-time code from `/tmp/gh-login.out`, hand it to the student on its own line, open [github.com/login/device](https://github.com/login/device) for them, and wait for their Authorize click before re-checking `gh auth status`.
-- **`gh repo create` or PR creation fails:** Almost always auth: run the sign-in FOR them (never have the student type a terminal command): `echo | gh auth login --hostname github.com --git-protocol https --web --skip-ssh-key > /tmp/gh-login.out 2>&1 &` then read the one-time code from `/tmp/gh-login.out`, hand it to the student on its own line, open [github.com/login/device](https://github.com/login/device) for them, and wait for their Authorize click before re-checking `gh auth status`. Be patient, it may be their first time authorizing an app. If `gh` isn't installed at all, run `brew install gh` for them (Mac) or point at cli.github.com, then auth the same way.
-- **Screenshot fails or won't render:** Fall back to the student verifying live in the browser; the human click is the floor and the teaching point survives. They can set up the screenshot loop after the lesson.
+- **`gh repo create` or PR creation fails:** Almost always auth: run the sign-in FOR them (never have the student type a terminal command): `echo | gh auth login --hostname github.com --git-protocol https --web --skip-ssh-key > /tmp/gh-login.out 2>&1 &` then read the one-time code from `/tmp/gh-login.out`, hand it to the student on its own line, open [github.com/login/device](https://github.com/login/device) for them, and wait for their Authorize click before re-checking `gh auth status`. Be patient, it may be their first time authorizing an app. If `gh` isn't installed at all, run `brew install gh` for them (Mac) or use the platform's package manager, then auth the same way.
+- **Screenshot fails or won't render:** Fall back to the student verifying live in the browser; the human click is the floor and the teaching point survives. They can set up the screenshot loop after the lesson (`npx playwright install chromium`).
+- **The PR page doesn't open:** Re-run `open <pr-url>`, and give the URL in plain text so they can paste it into any browser. Never rely on the in-app view for the PR.
 - **App not running when the lesson starts:** The setup check handles it. If it still fails, run `npm run dev` and confirm both ports (5173 and 3001) before continuing.
 - **Student wants to fix more of the planted bugs:** Encourage it, after the lesson: same investigate, fix, verify, commit cycle, and each one is good PR practice on their own repo.
 - **Student asks about merge conflicts:** Brief and honest: it happens when two people change the same lines. They're the only contributor here, so it won't come up today; when it does someday, ask me and we'll resolve it together.
-- **Student's personal hooks or config cause friction:** Acknowledge it plainly. Their personal setup may fire on some lesson steps; they can temporarily disable custom hooks or just work through it. The concepts are unaffected.
+- **Student's personal rules or config cause friction:** Acknowledge it plainly. Their personal setup may fire on some lesson steps; they can temporarily disable custom rules or just work through it. The concepts are unaffected.
 - **Student asks whether the PR will be merged:** Honest answer: it's a PR on their own repo, so they're the reviewer. They can merge it themselves after the lesson (say "merge my PR") and feel the full loop close. On a team repo, a teammate would review first.

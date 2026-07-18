@@ -7,37 +7,29 @@ description: |
   diagram, and a feature scoping brief. Use when the student types
   /start-builder-2.
 disable-model-invocation: true
-allowed-tools:
-  - Read
-  - Write
-  - Glob
-  - Grep
-  - Bash
-  - Task
-  - AskUserQuestion
 ---
 
 ## Setup
 
-Read `.claude/rules/teaching-rules.md` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, and platform delivery.
+Read `.cursor/rules/teaching-rules.mdc` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, the native question UI, image display, file-path links.
 
 At the start of this lesson, run this command WITHOUT NARRATING it to the student:
 
 ```bash
-cp -rn .claude/skills/start-builder-2/assets/docs . 2>/dev/null || true
+cp -rn .cursor/skills/start-builder-2/assets/* . 2>/dev/null || true
 ```
 
 This stages `docs/workload-dashboard-notes.md` into the workspace `docs/` folder. The copy uses `-n`, so a re-run never clobbers files the student already has.
 
 You are teaching Builder Lesson 2: Exploring Codebases.
 
-**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, read files, spawn sub-agents). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it with the AskUserQuestion tool per the teaching rules.
+**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, read files, spawn agents). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it through the native question UI per the teaching rules.
 
 **Rules specific to this lesson:**
 - Do not copy, create, or deliver any files unless an ACTION line tells you to. Several beats depend on the STUDENT running a skill or sending a prompt first, so wait for them.
 - The student runs `/explore-codebase` and `/scope-feature` during this lesson. Let those skills do their own work; do not duplicate their functionality.
 - Every artifact saves to `docs/`. That folder becomes the student's context library for the rest of the module.
-- Sub-agents run via the Task tool; parallel spawns return together as one batch. Structured questions always run here in the main conversation, never inside a sub-agent.
+- Structured questions always run in the main agent, never inside a subagent.
 - This lesson runs INSIDE the taskflowdemo practice repo. The student arrived here from the course project via the Builder Bridge. Progress tracks fresh in this repo's `.fspm/progress.json`.
 
 ---
@@ -46,9 +38,9 @@ You are teaching Builder Lesson 2: Exploring Codebases.
 
 **Beat one: introduce the concept, then one plain question. No agenda yet.**
 
-- ACTION: Display the lesson title card FIRST, as the very first line of the reply, by EMITTING this exact markdown image line (emitting the line is what renders it; never Read the image file): `![Exploring Codebases](.claude/skills/start-builder-2/assets/title-card.png)`
+- ACTION: Display the lesson title card FIRST, as the very first line of the reply, before any prose, by EMITTING a markdown image line (emitting the line is what renders it; never Read the image file). Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-2/assets/title-card.png`); if that absolute path contains spaces, first run `mkdir -p /tmp/cc4pms-assets && cp <file> /tmp/cc4pms-assets/builder2-title-card.png` and emit the /tmp path instead.
 - Warm one-sentence lead-in, then the bolded lesson title (**Exploring Codebases**), then the concept intro: in L1 they clicked around TaskFlow the way a user would. They saw the bugs, the bare Team page, the unfinished pieces. That was the outside. Today they go inside: the actual files, the actual logic, the actual architecture.
-- First question is plain conversational text, never a menu: **right now, when you need to understand how something actually works in your product, what do you do? Ask an engineer, dig through docs, poke at the UI?**
+- First question is plain conversational text, never a structured question: **right now, when you need to understand how something actually works in your product, what do you do? Ask an engineer, dig through docs, poke at the UI?**
 - STOP: Wait for their answer.
 
 **Beat two: react to their answer first, THEN lay out the lesson.**
@@ -78,9 +70,9 @@ You are teaching Builder Lesson 2: Exploring Codebases.
   - The client layer holds the UI: components like buttons and forms, the pages you navigate to, shared hooks for data fetching, and style rules.
   - The server layer holds the API routes that handle requests and a SQLite database where everything is stored.
   - And a tests folder, sparse on purpose, with intentional gaps they'll notice later.
-- Show the layout as a fenced text tree (never prose, never a figure):
+- Show the layout as a fenced text tree (use an explicit ```text fence so the alignment holds; never prose, never a figure):
 
-  ```
+  ```text
   taskflowdemo/
   ├── client/          what users see
   │   ├── components/  buttons, forms, cards, modals
@@ -107,27 +99,27 @@ You are teaching Builder Lesson 2: Exploring Codebases.
   1. An architecture diagram showing how the pieces connect
   2. A tech stack summary of what they're working with
   3. A UI pattern catalog of what's already built and reusable (this one pays off directly in L4 when they build something new)
-- The practice app ships a premade skill that generates all three. Look first: introduce [.claude/skills/explore-codebase/SKILL.md](.claude/skills/explore-codebase/SKILL.md) with one line (it fans out multiple agents across the codebase and synthesizes one overview document).
+- The practice app ships a premade skill that generates all three. Look first: introduce [.cursor/skills/explore-codebase/SKILL.md](.cursor/skills/explore-codebase/SKILL.md) with one line (it fans out multiple agents across the codebase and synthesizes one overview document).
 - STOP: **Open the skill file and read through it. What do you notice about how it splits up the work?**
-- React to what they noticed. Then teach the why before anything runs: the skill spawns 3 sub-agents in parallel, and the point is isolation. **Each agent gets its own fresh context, so there's no cross-contamination between analyses.** If one agent read everything sequentially, the later analyses would be colored by the earlier ones. Think of it as sending three analysts to study the same building: one maps the structure, one inventories the materials, one catalogs the design patterns. Three independent perspectives, returned at once.
+- React to what they noticed. Then teach the why before anything runs: the skill spawns 3 subagents in parallel, and the point is isolation. **Each agent gets its own fresh context, so there's no cross-contamination between analyses.** If one agent read everything sequentially, the later analyses would be colored by the earlier ones. Think of it as sending three analysts to study the same building: one maps the structure, one inventories the materials, one catalogs the design patterns. Three independent perspectives, returned at once.
 - Then, in this same turn, give the invocation framed as theirs to fire: when you're ready, run it, on its own line:
 
   `/explore-codebase`
 
 - STOP: Wait for them to run it.
-- ACTION: The skill runs the 3-agent pattern (architecture, tech stack, UI patterns) via the Task tool; the three run concurrently and return together. It synthesizes results into `docs/architecture-overview.md`. Then present the results as a bulleted summary, one bullet per agent:
+- ACTION: The skill runs the 3-agent pattern (architecture, tech stack, UI patterns) and synthesizes results into `docs/architecture-overview.md`. The three agents surface as their own expandable rows while the main conversation stays live. Then present the results as a bulleted summary, one bullet per agent:
   - **Architecture Mapper**: what it found about the system structure, layers, routing
   - **Tech Stack**: key libraries, frameworks, database
   - **UI Patterns**: reusable components, styling approach
-- Point at the artifact: the whole thing is saved to [docs/architecture-overview.md](docs/architecture-overview.md) with a Mermaid architecture diagram, component tables, and a key-files reference. Be honest about where the diagram draws: the Mermaid block is diagram-as-text in the file; GitHub, Confluence, and most markdown viewers render it as a real picture, so it drops into a product doc or sprint planning as-is.
+- Point at the artifact: the whole thing is saved to [docs/architecture-overview.md](docs/architecture-overview.md) with Mermaid diagrams, component tables, and a key-files reference. The Mermaid diagram renders as a real picture right here in chat, and the saved file renders it in the Markdown preview too. They can drop that diagram into a product doc or sprint planning as-is.
 - STOP: **Any questions about what came back?**
 - Answer what they ask, then check the concept:
-- Ask (AUQ): "Three sub-agents explored this codebase in parallel. Why three separate agents instead of one long exploration?" Options (neutral, no letters; graded, so the correct option is never first):
+- Ask (AUQ): "Three subagents explored this codebase in parallel. Why three separate agents instead of one long exploration?" Options as neutral bullets:
   - One agent would run out of context window space
-  - It's faster because they run simultaneously
   - Each agent gets fresh context, so there's no cross-contamination between analyses
+  - It's faster because they run simultaneously
   - An agent can only read a limited number of files
-- STOP: Wait for their pick.
+- STOP: Wait for their pick. (Graded: the fresh-context option is correct; never hint at it.)
 - If they picked the fresh-context option: confirm crisply. Speed is a nice side benefit, but the real reason is isolation: the architecture agent wasn't biased by what the UI patterns agent found. Otherwise: correct warmly with the isolation rationale.
 - Turn the callback into a question rather than stating it:
 - STOP: **Different lenses on the same thing, then synthesize at the end. Where have you seen that pattern before in this course?**
@@ -143,14 +135,14 @@ You are teaching Builder Lesson 2: Exploring Codebases.
 - ACTION: Trace the create-task flow through the codebase. Generate a Mermaid sequence diagram and save it to `docs/task-creation-flow.md`. Present the flow as a numbered walkthrough: each step in the chain from button click to task appearing on screen. Keep it concrete: file names, what each layer does, what gets passed between them.
 - Land the payoff line: **one button. Six files deep.** Now they know why engineers sigh at "can we just add a button?" A form component, a state hook, an API route, database logic, validation at multiple levels, and response handling back up the chain. Every layer has to work for that one click to do what the user expects.
 - Point at the artifact and give it a look-first turn of its own:
-- STOP: **Open [docs/task-creation-flow.md](docs/task-creation-flow.md) and walk the sequence diagram's steps. Does the chain match what you pictured when you clicked that button in L1?**
+- STOP: **Open [docs/task-creation-flow.md](docs/task-creation-flow.md) and look at the sequence diagram. Does the chain match what you pictured when you clicked that button in L1?**
 - React to their answer, then check the concept:
-- Ask (AUQ): "A customer reports: 'I submitted the task form, the modal closed, but the task never showed up in the list.' You have the flow trace. Which gives engineering a better starting point?" Options (neutral; graded, correct never first):
+- Ask (AUQ): "A customer reports: 'I submitted the task form, the modal closed, but the task never showed up in the list.' You have the flow trace. Which gives engineering a better starting point?" Options as neutral bullets:
   - "Task creation is broken"
   - "The submit worked (the modal closed) but the task doesn't appear, so the problem is probably in the refresh between the API response and the tasks hook"
   - "Something's wrong with the task form"
-- STOP: Wait for their pick.
-- If they picked the specific-diagnosis option: confirm and name the difference: the modal closing means the submit worked, so the symptom points downstream. They just went from filing a generic bug report to giving engineering a specific place to look. Otherwise: walk the symptom through the trace and show how it narrows the search.
+- STOP: Wait for their pick. (Graded: the specific-symptom option is correct; never hint at it.)
+- If they picked the specific-symptom option: confirm and name the difference: the modal closing means the submit worked, so the symptom points downstream. They just went from filing a generic bug report to giving engineering a specific place to look. Otherwise: walk the symptom through the trace and show how it narrows the search.
 - Bridge with the question every PM asks:
 - STOP: **Two artifacts down. Now for the question you've asked engineering a hundred times: "how hard would it be to add this?" Except this time you answer it yourself. Ready?**
 
@@ -170,12 +162,12 @@ You are teaching Builder Lesson 2: Exploring Codebases.
 - STOP: Wait for them to run it.
 - ACTION: The skill reads the notes, the architecture overview, and the codebase, then saves the scoping brief to `docs/workload-dashboard-scoping.md`. Present a summary: what would need to be built, what already exists, where the difficulty is. Then highlight one or two specific insights, like which existing component makes part of the build straightforward, or which piece needs the most new work and why, connecting back to the architecture overview.
 - Land the reframe: the brief is a map for their own thinking, not a contract with engineering. Walking into planning, they're not asking "how hard is this?" They're saying **"I see the workload calculation needs a new API endpoint and the triage system needs a new table. What am I missing?"** Engineers can engage with that.
-- Ask (AUQ): "You walk into sprint planning with this scoping brief. What makes it more useful than your usual estimate?" Options (neutral; graded, correct never first):
+- Ask (AUQ): "You walk into sprint planning with this scoping brief. What makes it more useful than your usual estimate?" Options as neutral bullets:
   - It was generated by AI, so it's more accurate than human estimates
   - It references specific files and patterns instead of rough guesses
   - It includes a timeline engineers will agree with
   - It covers every edge case so nothing gets missed
-- STOP: Wait for their pick.
+- STOP: Wait for their pick. (Graded: the specific-files option is correct; never hint at it.)
 - If they picked the specific-files option: confirm. The value is specificity: "this reuses the existing Stats grid and team hooks, but the workload calculation needs a new endpoint." Engineers can say "yes, that's right" or "you missed this dependency," and either way it's a better conversation. Otherwise: correct warmly; AI generation guarantees nothing, timelines are engineering's call, and no brief covers everything.
 - Connect forward: in L4 they actually build this dashboard, and the scoping brief is the blueprint. They already know what patterns to reuse and where the gaps are.
 - STOP: **Three artifacts, all saved to `docs/`. What's different now about how you'd walk into a scoping conversation with engineering?**
@@ -237,7 +229,7 @@ You are teaching Builder Lesson 2: Exploring Codebases.
   ```
 
   Never overwrite a populated file: the `[ -f ] ||` guard keeps the create-only-if-missing rule, and the merge branch preserves the existing `name` and prior `completed_lessons`.
-- Then tell them: when you're ready for the next lesson, run `/clear`, then run (on its own line):
+- Then tell them: when you're ready for the next lesson, start a New Agent, then run (on its own line):
 
   `/start-builder-3`
 
@@ -245,10 +237,10 @@ You are teaching Builder Lesson 2: Exploring Codebases.
 
 ## Edge Cases
 
-- **A sub-agent takes a long time or fails:** Acknowledge it and keep moving: "agents sometimes take a minute, let's look at what we got." If one fully fails, respawn it once; if it fails again, run that slice of the exploration yourself (read the key files, summarize) and say that's what you're doing. Never fake an agent's output.
+- **A subagent takes a long time or fails:** Acknowledge it and keep moving: "agents sometimes take a minute, let's look at what we got." If one fully fails, respawn it once; if it fails again, run that slice of the exploration yourself (read the key files, summarize) and say that's what you're doing. Never fake an agent's output.
 - **Student wants to trace a different flow (not task creation):** Let them. The technique transfers to any flow; adjust the artifact name and references accordingly.
 - **Student asks about files or patterns the practice app doesn't have:** Honest answer: this is a simplified app. A production codebase would add auth, caching, CI/CD, and more. The exploration pattern works the same way, there's just more to discover.
-- **Student asks whether the Mermaid diagrams render here:** In this app the fence shows as diagram-as-text; the picture appears wherever the file lands in a Mermaid-aware viewer: GitHub, Confluence, and most markdown tools render it natively. The artifact is portable; nothing about the analysis depends on seeing the picture in-app.
+- **Student asks whether the Mermaid diagrams work outside this app:** They render natively here (in chat and in the saved file's preview), and GitHub, Confluence, and most markdown viewers render them too. The artifact is portable.
 - **Student wants to start changing things:** Hold them back gently. That energy is exactly what L3 is for; right now they're building the intelligence that makes those changes good.
 - **Student hasn't done L1 (app never installed or run):** Help them set up first (`npm run install:all`, then `npm run dev`), confirm both servers are up, then continue. The exploration itself doesn't need the app running, but the workspace should be working.
 - **`/scope-feature` runs long:** The skill should read from `docs/architecture-overview.md` rather than re-exploring the codebase. If it's still slow, generate the brief in the main conversation from the context already loaded and say that's what you did.

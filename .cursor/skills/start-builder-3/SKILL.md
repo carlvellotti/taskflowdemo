@@ -7,19 +7,11 @@ description: |
   mode throughout, and the agent self-verify screenshot loop.
   Use when the student types /start-builder-3.
 disable-model-invocation: true
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
-  - Bash
-  - AskUserQuestion
 ---
 
 ## Setup
 
-Read `.claude/rules/teaching-rules.md` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, and platform delivery.
+Read `.cursor/rules/teaching-rules.mdc` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, the native question UI, image display, file-path links.
 
 At the start of this lesson, run this check WITHOUT NARRATING it to the student: `curl -s -o /dev/null -w "%{http_code}" http://localhost:5173`. If it doesn't return 200, start the dev server in the background (`npm run dev`), wait a few seconds, and confirm both servers are listening (Vite on 5173, Express on 3001). The student should have a working `http://localhost:5173` before the lesson begins. Handle this entirely without asking them.
 
@@ -27,13 +19,13 @@ There is no asset deploy for this lesson.
 
 You are teaching Builder Lesson 3: Modifying & Improving.
 
-**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, read files, edit files, take screenshots). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it with the AskUserQuestion tool per the teaching rules.
+**How to read this lesson plan:** It describes what to teach, not what to say. Teach each section conversationally in your own voice, in order. **Bold lines** are the language that has to land; deliver them with their words intact. `ACTION:` is something you do (display an image, read files, edit files, take screenshots). `STOP:` means end your turn and wait for the student. `Ask (AUQ):` is a structured question: render it through the native question UI per the teaching rules.
 
 **Rules specific to this lesson:**
-- Every change in this lesson goes through plan mode: when the student sends a scoping request, YOU enter plan mode (read-only), present the plan, and wait for the student to approve it on the plan approval UI before executing. Never edit before approval.
+- Every change in this lesson goes through plan mode: present the plan, wait for the student to approve it from the plan card, then execute. Never edit before approval.
 - Verification always happens against the served app at `http://localhost:5173`, never against a file path.
 - Reference `client/src/styles/tokens.css` for design tokens on any visual change.
-- Use the native screenshot capability for the before/after loop in Improvement 3, saving each capture as a PNG file and EMITTING it as a relative-path markdown image (two consecutive captures render reliably only as saved-file images). If a screenshot fails, say so plainly and have the student verify in their browser instead. Never fake or describe a screenshot you didn't take.
+- The before/after loop in Improvement 3 uses the Playwright CLI (`npx playwright screenshot`) run via bash. Save captures to `/tmp/cc4pms-assets/` (an absolute path with no spaces) so they render inline. If a capture fails, say so plainly and have the student verify in their browser instead. Never fake or describe a screenshot you didn't take.
 - Do not edit any file unless an ACTION line (after plan approval) calls for it.
 
 ---
@@ -42,9 +34,9 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 
 **Beat one: introduce the concept, then one plain question. No agenda yet.**
 
-- ACTION: Display the lesson title card FIRST, as the very first line of the reply, by EMITTING this exact markdown image line (emitting the line is what renders it; never Read the image file): `![Modifying & Improving](.claude/skills/start-builder-3/assets/title-card.png)`
+- ACTION: Display the lesson title card FIRST, as the very first line of the reply, before any prose, by EMITTING a markdown image line (emitting the line is what renders it; never Read the image file). Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-3/assets/title-card.png`); if that absolute path contains spaces, first run `mkdir -p /tmp/cc4pms-assets && cp <file> /tmp/cc4pms-assets/builder3-title-card.png` and emit the /tmp path instead.
 - Warm one-sentence lead-in, then the bolded lesson title (**Modifying & Improving**), then the concept intro: in L2 they explored this codebase without touching anything. Diagrams, flow maps, scoping, all read-only. That was the observer phase. **Today you cross the line: you're going to change actual code in an actual app, and the changes will look like they belong.**
-- First question is plain conversational text, never a menu: **have you ever asked an engineer for a "tiny" change and gotten a sigh back? What was the change?**
+- First question is plain conversational text, never a structured question: **have you ever asked an engineer for a "tiny" change and gotten a sigh back? What was the change?**
 - STOP: Wait for their answer.
 
 **Beat two: react to their answer first, THEN lay out the lesson.**
@@ -70,7 +62,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - STOP: **Why do you think that happens? What would make a code change look like an outsider dropped it in?**
 - Teach against their guess. Credit whatever they said (style, formatting, and tone guesses are all partly right), then land the real mechanism with honesty about your own defaults: **left to my own devices, I get creative when I should be consistent.** I'll import a different icon library when the app already has one. I'll invent new naming conventions when there are perfectly good ones two files away. The code works, but it reads like a guest wrote it.
 - The fix, and the habit that carries this whole lesson: **before you change anything, find how the codebase already handles that exact thing. Then match it.** If you want to improve a form, look at how other forms in this app work. If you want to add an icon, find where icons already live and how they're imported.
-- ACTION: Display the shift image by EMITTING this exact markdown image line: `![The Shift](.claude/skills/start-builder-3/assets/the-shift.png)`
+- ACTION: Display the shift image by EMITTING a markdown image line. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-3/assets/the-shift.png`); if the path contains spaces, cp to `/tmp/cc4pms-assets/builder3-the-shift.png` first and emit the /tmp path.
 - Contrast it with L2 in one beat: L2 was broad exploration, "map the whole system." That's right for understanding. For a specific change it's the wrong move; you want a targeted lookup of how THIS app handles THIS thing. **Consistency over creativity, always.**
 - STOP: **Three improvements coming up: copy, forms, visuals. Each one starts with that same look-around-first move. Ready for the first one?**
 
@@ -79,7 +71,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 ## Plan Mode
 
 - Signpost the tool before it's needed: before any change gets made, there's one tool to meet, because we'll use it on every change today. It's called **plan mode**.
-- What it is, plainly: whenever you're not 100% sure what I'm about to do (which files I'll touch, what might break), ask me to plan instead of act. When you send a scoping request, I switch into plan mode myself: a read-only state where I can look at everything but change nothing. **Instead of changing anything, I map out everything I'd do and show you the plan first.** The plan comes back through a plan approval UI, and nothing executes until you approve it there (you can also reject it or ask for revisions).
+- What it is, plainly: whenever you're not 100% sure what I'm about to do (which files I'll touch, what might break), you can have me plan instead of act. Switch into Plan Mode by typing `/plan` (or pressing Shift+Tab) first, then send your request; just saying "enter plan mode" inside a message won't switch modes. **Instead of changing anything, I map out everything I'd do and show you the plan first.** A plan card appears in chat, and nothing executes until you approve it from that card.
 - The judgment call, as a quick rule of thumb in a table:
 
   | Change | Plan mode? |
@@ -90,7 +82,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
   | Working with code in general | Almost always the right call |
 
 - We'll use it for every change this lesson so the rhythm becomes automatic: scope, review, approve, execute.
-- One practical note, delivered plainly: stay in this session for the whole lesson. **Don't run `/clear` or compact mid-lesson or you'll lose your place.** And the reference docs for this lesson are available via `/reference` any time.
+- One practical note, delivered plainly: stay in this agent for the whole lesson. **Don't start a New Agent mid-lesson or you'll lose your place.** And the reference docs for this lesson are available via `/reference` any time.
 - STOP: **What's a change you made recently (or asked for) where you'd have wanted a plan first?**
 - React to their answer, then move into the first improvement.
 
@@ -108,22 +100,22 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 
   For each suggestion, note how similar text is handled elsewhere in the app, so the existing conventions are visible.
 - The PM judgment framing, kept intact: **not everything I suggest is worth changing.** Some of these are real improvements, some are fine as-is. Their call.
-- Ask (AUQ): "Which are worth actually doing? Pick one or two." Render the suggestions as the options (multi-select, up to four, one option per suggestion). There's no right answer; this is product judgment.
+- Ask (AUQ): "Which are worth actually doing? Pick one or two." Render the suggestions as a multi-select structured question, one option per suggestion (short labels naming the file + change). There's no right answer; this is product judgment.
 - STOP: Wait for their picks.
-- React to what they picked, engaging with their reasoning if they gave any. Then put plan mode to work. Tell them to send this, on its own line: **"Plan first: scope the copy changes I picked. What files does this touch? What might break?"**
+- React to what they picked, engaging with their reasoning if they gave any. Then put plan mode to work. Two steps: first have them type `/plan` to switch into Plan Mode, then send, on its own line: **"Scope the copy changes I picked. What files does this touch? What might break?"**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode and present the plan: files affected and a risk read. For a copy fix this should be minimal, one or two files, no breaking risk. The plan approval UI carries the approve/revise/reject choice.
+- ACTION: In plan mode, present the plan: files affected and a risk read. For a copy fix this should be minimal, one or two files, no breaking risk. Wait for approval from the plan card.
 - STOP: Wait for the student to approve the plan.
 - ACTION: Apply the copy changes exactly as scoped.
 - Have them verify with their own eyes: **open http://localhost:5173 and find your copy change. Did it land the way you expected?**
 - STOP: Wait for their verdict.
 - React, then land the why: the change reads native because we found how the app already words similar text and matched that style. Nobody browsing this code would flag it.
-- Ask (AUQ): "You want to improve a form's placeholder text in some other app. What do you do FIRST?" Options (neutral; graded, correct never first):
+- Ask (AUQ): "You want to improve a form's placeholder text in some other app. What do you do FIRST?" Options as neutral bullets:
   - Write better placeholder text based on UX best practices
   - Find how other forms in that app handle placeholder text, and match that style
   - Generate five creative options and pick the best one
-- STOP: Wait for their pick.
-- If they picked the find-and-match option: confirm crisply. Otherwise: correct warmly. Best practices and creativity are great in a vacuum; in an existing codebase, **consistency beats creativity**. Find the conventions first, then improve within them.
+- STOP: Wait for their pick. (Graded: the match-the-app option is correct; never hint at it.)
+- If they picked the match-the-app option: confirm crisply. Otherwise: correct warmly. Best practices and creativity are great in a vacuum; in an existing codebase, **consistency beats creativity**. Find the conventions first, then improve within them.
 - STOP: **One down. The next one is structural, and it's where this pattern really earns its keep. Ready?**
 
 ---
@@ -135,19 +127,19 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - STOP: Wait for their observations.
 - React to what they actually found (ProjectForm is bare next to TaskForm: thinner placeholders, rougher layout, less care). Then teach it: two forms, same app, two levels of polish. That gap is everywhere in real products, and users feel it even when they can't name it. **As a PM, these inconsistencies quietly erode trust in your product.**
 - The move: not redesigning ProjectForm from scratch. **Find what TaskForm does well, and bring ProjectForm up to that standard.** Same reference pattern, pointed at your own codebase's best work.
-- Tell them to send this, on its own line: **"Plan first: compare TaskForm and ProjectForm. What patterns does TaskForm use that ProjectForm is missing? Then improve ProjectForm to match that quality."**
+- Two steps: first have them type `/plan`, then send, on its own line: **"Scope this: compare TaskForm and ProjectForm. What patterns does TaskForm use that ProjectForm is missing? Then improve ProjectForm to match that quality."**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode and compare `client/src/components/tasks/TaskForm.jsx` and `client/src/components/projects/ProjectForm.jsx`. Identify the patterns TaskForm has that ProjectForm lacks (placeholder conventions, field layout, spacing, labels). Present the plan: which patterns get applied, which files change. Wait for approval on the plan approval UI.
+- ACTION: In plan mode, compare `client/src/components/tasks/TaskForm.jsx` and `client/src/components/projects/ProjectForm.jsx`. Identify the patterns TaskForm has that ProjectForm lacks (placeholder conventions, field layout, spacing, labels). Present the plan: which patterns get applied, which files change. Wait for approval from the plan card.
 - STOP: Wait for the student to approve the plan.
-- ACTION: Apply the improvements as scoped. Report when complete, briefly.
+- ACTION: Apply the improvements as scoped. Report when complete, briefly. (The per-edit inline diffs and the Changes pill show exactly what moved, if they want to look.)
 - Verification, student-eyes again: **check both forms in the browser. Does New Project feel like it lives in the same app as New Task now?**
 - STOP: Wait for their verdict.
 - React. The best version of this improvement is invisible: it matches everything around it, same conventions, same quality bar.
-- Ask (AUQ): "What's the biggest risk of skipping the reference pattern here and just improving ProjectForm from general best practices?" Options (neutral; graded, correct never first):
-  - TaskForm might accidentally break
+- Ask (AUQ): "What's the biggest risk of skipping the reference pattern here and just improving ProjectForm from general best practices?" Options as neutral bullets:
   - The form might look better in isolation but feel foreign next to the rest of the app
+  - TaskForm might accidentally break
   - The change would take longer to build
-- STOP: Wait for their pick.
+- STOP: Wait for their pick. (Graded: the foreign-in-context option is correct; never hint at it.)
 - If they picked the foreign-in-context option: confirm. Otherwise: correct warmly; the danger was never breakage or speed, it's a form that follows textbook guidelines while ignoring the app's own language.
 - STOP: **Two down, one to go. The last one is visual, and it fixes a real limitation of mine. Ready?**
 
@@ -161,23 +153,23 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - Before fixing it, the honest limitation: so far THEY'VE done all the visual checking by switching to the browser. That works, but think about what it means on my side: **I literally cannot see what I build. Making visual changes without screenshots is like writing CSS blindfolded.** I edit the code and hope.
 - Turn the fix into a callback question before revealing it: there's a pattern for this. You give the builder a way to check its own work, or a second set of eyes entirely. **You used it in Core and again in Research. What's it called?**
 - STOP: Wait for their answer.
-- Confirm or supply it: **builder-validator.** One agent (or one step) builds, a check verifies. Here the validator is a camera: I can screenshot the page before the change, make the change, screenshot after, and compare the result against what you asked for. Neither of us hopes anymore.
-- ACTION: Display the loop image by EMITTING this exact markdown image line: `![The screenshot loop](.claude/skills/start-builder-3/assets/screenshot-loop.png)`
-- One-line portability note: outside this app, a CLI called Playwright does the same job (`npx playwright screenshot <url> <file>`), so this loop travels to any setup.
-- Tell them to send this, on its own line: **"Plan first: improve the Dashboard stat cards with better spacing and visual weight. Reference the design tokens in tokens.css. Screenshot before and after so we can compare."**
+- Confirm or supply it: **builder-validator.** One agent (or one step) builds, a check verifies. Here the validator is a camera: a CLI called Playwright can screenshot any page from the command line, so I can screenshot the page before the change, make the change, screenshot after, and compare the result against what you asked for. Neither of us hopes anymore.
+- ACTION: Display the loop image by EMITTING a markdown image line. Resolve the absolute path (repo root via `git rev-parse --show-toplevel` + `/.claude/skills/start-builder-3/assets/screenshot-loop.png`); if the path contains spaces, cp to `/tmp/cc4pms-assets/builder3-screenshot-loop.png` first and emit the /tmp path.
+- One-line portability note: the command is `npx playwright screenshot <url> <file>`, plain bash, so this loop travels to any setup and any tool.
+- Two steps: first have them type `/plan`, then send, on its own line: **"Improve the Dashboard stat cards with better spacing and visual weight. Reference the design tokens in tokens.css. Screenshot before and after so we can compare."**
 - STOP: Wait for them to send it.
-- ACTION: Enter plan mode. Read `client/src/styles/tokens.css` for the app's design tokens (colors, spacing, font sizes). Scope the changes to `client/src/components/dashboard/Stats.jsx`: spacing, hierarchy, and visual weight from the tokens only. This app has no icon library, so do NOT add one (that would be exactly the guest-code move this lesson warns about); if visual accents help, minimal inline SVGs styled from the tokens are the honest ceiling. Present the plan. Wait for approval on the plan approval UI.
+- ACTION: In plan mode, read `client/src/styles/tokens.css` for the app's design tokens (colors, spacing, font sizes). Scope the changes to `client/src/components/dashboard/Stats.jsx`: spacing, hierarchy, and visual weight from the tokens only. This app has no icon library, so do NOT add one (that would be exactly the guest-code move this lesson warns about); if visual accents help, minimal inline SVGs styled from the tokens are the honest ceiling. Present the plan. Wait for approval from the plan card.
 - STOP: Wait for the student to approve the plan.
-- ACTION: Take the "before" screenshot of `http://localhost:5173`, save it as `docs/stats-before.png`, and EMIT it as a relative-path markdown image (`![Before](docs/stats-before.png)`). Then apply the improvements as scoped. Then take the "after" screenshot, save it as `docs/stats-after.png`, and EMIT it the same way. If the screenshot capture fails at any point, say so plainly and fall back to student browser verification; never describe a screenshot that wasn't taken.
+- ACTION: Take the "before" screenshot with the Playwright CLI (`npx playwright screenshot http://localhost:5173 /tmp/cc4pms-assets/stats-before.png`, creating `/tmp/cc4pms-assets` first; if Playwright's browser isn't installed, run `npx playwright install chromium` and say in one line what you're doing). EMIT it inline as a markdown image using the /tmp absolute path. Then apply the improvements as scoped. Then take the "after" screenshot to `/tmp/cc4pms-assets/stats-after.png` and EMIT it inline the same way. If a capture fails at any point, say so plainly and fall back to student browser verification; never describe a screenshot that wasn't taken.
 - Both images should now be in the conversation, before and after.
 - STOP: **Compare them. Does the after match what you had in mind, or would you push it further?**
 - STOP handling: engage with their verdict; if they'd push further, note one concrete next tweak they could ask for after the lesson.
 - Close the beat: the screenshots mean the result is checked, not hoped for. And the improvements pulled their colors, spacing, and sizing from `tokens.css`, the app's own design tokens, so the cards still speak TaskFlow's visual language. Reference pattern again.
-- Ask (AUQ): "Why reference tokens.css instead of just picking colors and spacing that look good?" Options (neutral; graded, correct never first):
+- Ask (AUQ): "Why reference tokens.css instead of just picking colors and spacing that look good?" Options as neutral bullets:
   - tokens.css has objectively better colors than I'd pick
-  - I can't generate CSS without a reference file
   - The app's existing design tokens keep the change consistent with the rest of the product
-- STOP: Wait for their pick.
+  - I can't generate CSS without a reference file
+- STOP: Wait for their pick. (Graded: the consistency option is correct; never hint at it.)
 - If they picked the consistency option: confirm. Otherwise: correct warmly. I can absolutely invent good-looking values, and that's the trap: better in isolation, inconsistent in context. **The tokens ARE the pattern.**
 
 ---
@@ -232,7 +224,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
   ```
 
   Never overwrite a populated file: the `[ -f ] ||` guard keeps the create-only-if-missing rule, and the merge branch preserves the existing `name` and prior `completed_lessons`.
-- Then tell them: when you're ready for the next lesson, run `/clear`, then run (on its own line):
+- Then tell them: when you're ready for the next lesson, start a New Agent, then run (on its own line):
 
   `/start-builder-4`
 
@@ -240,7 +232,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 
 ## Edge Cases
 
-- **Screenshot capture fails or is unavailable:** Say so plainly and have the student verify in their browser instead. The teaching point (give the builder a way to check its own work) still lands; offer the Playwright CLI (`npx playwright install chromium`, then `npx playwright screenshot`) as the try-it-later path. Never simulate a screenshot.
+- **Playwright capture fails or the browser install won't complete:** Say so plainly and have the student verify in their browser instead. The teaching point (give the builder a way to check its own work) still lands; they can run `npx playwright install chromium` later and retry. Never simulate a screenshot.
 - **App not running at lesson start:** Setup handles it automatically. If it still fails, debug with the student (`npm run dev`, check ports 5173 and 3001, kill orphan processes on those ports) before continuing.
 - **All copy suggestions are good and the student can't pick:** Any choice works. The point is exercising judgment, not finding a right answer.
 - **Student wants to fix everything, not just 1-2 copy items:** Let them do two now, and note the rest will still be there after the lesson. Keep momentum.
@@ -248,6 +240,6 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - **Student notices the "Completd Tasks" typo on the Dashboard:** Credit the catch. That's one of the planted bugs, and it's theirs to fix in L5 when git and shipping arrive.
 - **Student asks whether plan mode costs them anything:** It costs about 30 seconds and saves the mystery. Plans are cheap; surprise edits aren't.
 - **Student wants to skip plan mode on a change:** Fine for the copy fix if they insist (it's genuinely low-risk), but keep it for the form and visual changes; multi-file edits are exactly what it's for.
-- **Changes happened without a plan (nothing came up for approval):** The request read as a build instruction instead of a scoping one. Undo isn't needed if the result is right; otherwise restore with `git checkout -- <file>`, then have them resend the request starting with "Plan first:" and enter plan mode before touching anything.
-- **Student runs `/clear` mid-lesson anyway:** They can rerun `/start-builder-3`; the lesson is idempotent (no asset deploy, progress writes only at the end), so pick up from wherever their app state actually is.
+- **Plan mode didn't engage (no plan card, changes just happened):** They sent the request without toggling first. Have them type `/plan` to switch modes, then resend the same request. One line, no drama.
+- **Student starts a New Agent mid-lesson anyway:** They can rerun `/start-builder-3`; the lesson is idempotent (no asset deploy, progress writes only at the end), so pick up from wherever their app state actually is.
 - **Student asks why we don't just let them edit the code directly:** They can, and some students do. The lesson teaches the agent-driven path because it scales to changes they couldn't hand-write; editing directly is always allowed.

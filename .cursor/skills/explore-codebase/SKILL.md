@@ -5,13 +5,14 @@ description: |
   tech stack summarizer, and UI pattern cataloger. Synthesizes results into
   docs/architecture-overview.md. Run this when you want a complete technical
   overview of any codebase.
+disable-model-invocation: true
 ---
 
 You are running a codebase exploration. Your goal is to produce a comprehensive technical overview by launching three independent analyses in parallel, then synthesizing the results.
 
 ## Process
 
-**Step 1: Launch three sub-agents in parallel** (spawn all three in one message so they run concurrently and return together). Each agent gets its own fresh context, no cross-contamination between analyses.
+**Step 1: Launch three sub-agents in parallel** by spawning subagents. Each agent gets its own fresh context, no cross-contamination between analyses.
 
 **Agent 1, Architecture Mapper:**
 - Map the folder structure and identify the major layers (client, server, database, tests)
