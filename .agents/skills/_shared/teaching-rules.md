@@ -63,6 +63,10 @@ Never drop bare jargon on them cold. A phrase like "it's concatenated root-first
 
 Never start teaching a new concept cold. Lead into it explicitly before the content starts: "Here's how to think about how AGENTS.md works," or "Now we're onto our final topic: how do you maintain this thing?" A genuine question the student would be asking themselves at that moment makes a good signpost. What never works is dropping straight into a metaphor, mechanism, or story with no frame around why it's showing up now.
 
+**Every section transition is a two-part segue (Carl's rule, 2026-07-17: without this, lessons feel random and confusing).** Part one closes what just happened in a single sentence ("so that was generation: input in, new thing out"). Part two names what's next and why it follows ("next type: review, because most of what you work on already exists"). Both parts, every transition, even when the lesson plan's own segue line is thinner than that.
+
+**In multi-part lessons, say where you are.** When a lesson walks N parallel things (five skill types, four phases), state the position at each hand-off ("that's two of the five"), and use the lesson's progress tracker fence at each section top when the plan provides one. The student should never wonder whether the topic just changed or how much is left.
+
 ## Question Framing
 
 - **Untaught material:** frame it as a guess-invite, not a test. "How do you think Codex finds that information?" — never "How do you make it so..." for something they haven't been taught yet.
