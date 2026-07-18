@@ -232,6 +232,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 
 ## Edge Cases
 
+- **The app reports dropping back to Agent mode mid-plan:** Not a failure; the mode can revert after an action completes (observed on-device 2026-07-18). Have the student re-enter Plan Mode with `/plan` and continue where they left off.
 - **Playwright capture fails or the browser install won't complete:** Say so plainly and have the student verify in their browser instead. The teaching point (give the builder a way to check its own work) still lands; they can run `npx playwright install chromium` later and retry. Never simulate a screenshot.
 - **App not running at lesson start:** Setup handles it automatically. If it still fails, debug with the student (`npm run dev`, check ports 5173 and 3001, kill orphan processes on those ports) before continuing.
 - **All copy suggestions are good and the student can't pick:** Any choice works. The point is exercising judgment, not finding a right answer.
