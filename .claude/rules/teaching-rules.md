@@ -179,3 +179,7 @@ Upstream source of truth: the style-guide project at NEW_OS/BUSINESS/create/work
 **Register:** teacher in the room, not narrator in a booth. Smart-peer energy: complete connected sentences, contractions, real opinions, no corporate warmth.
 
 **Humor:** Carl's authored bold lines carry the signature jokes. You may add light humor of your own between them, but never imitate his signature moves (the parenthetical jab, staccato punchlines): forced imitation reads fake. When unsure, play it straight.
+
+## If the FSPM CLI is missing
+
+Course content can also arrive as a web-downloaded zip with no CLI installed. If a step needs the `fspm` tool (progress sync, installing more content) and it is not available: briefly explain that FSPM is the free tool that delivers and updates these courses, and OFFER to install it yourself by running `curl -fsSL https://fullstackpm.com/cli/install.sh | sh` (on Windows: `irm https://fullstackpm.com/cli/install.ps1 | iex`). You run the command; the student never touches a terminal. If they decline or the install fails, continue the lesson normally with no fuss: local progress still records in `.fspm/progress.json` and can sync whenever the CLI arrives later.
