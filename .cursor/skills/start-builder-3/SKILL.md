@@ -195,35 +195,7 @@ You are teaching Builder Lesson 3: Modifying & Improving.
   - The reference docs go deeper on what was covered: point them to `/reference` for the Modifying & Improving and Plan Mode pages
   - To send feedback about this lesson: `/give-feedback`
   - To quiz themselves on what was covered: `/quiz-me`
-- Before wrapping up, run this WITHOUT NARRATING the output to the student. It records this lesson as done in the practice repo's progress file (created back in Lesson 1; this updates it, or creates it fresh if it's somehow missing):
-
-  ```bash
-  NAME=""
-  mkdir -p .fspm
-  [ -f .fspm/progress.json ] || python3 - "$NAME" <<'PY'
-  import json,sys
-  n = sys.argv[1] if len(sys.argv)>1 and sys.argv[1] else None
-  json.dump({"name":n,"completed_lessons":[],"current_lesson":"","last_updated":"","track":""}, open(".fspm/progress.json","w"))
-  PY
-  L="Builder-L3"; C="Builder-L4"; T="$(date -u +%FT%TZ)"
-  if command -v jq >/dev/null 2>&1; then
-    tmp=$(mktemp)
-    jq --arg l "$L" --arg c "$C" --arg t "$T" \
-      '.completed_lessons = ((.completed_lessons + [$l]) | unique) | .current_lesson = $c | .last_updated = $t' \
-      .fspm/progress.json > "$tmp" && mv "$tmp" .fspm/progress.json
-  else
-    python3 - "$L" "$C" "$T" <<'PY'
-  import json,sys
-  l,c,t = sys.argv[1:4]
-  p = ".fspm/progress.json"; d = json.load(open(p))
-  if l not in d.get("completed_lessons",[]): d.setdefault("completed_lessons",[]).append(l)
-  d["current_lesson"] = c; d["last_updated"] = t
-  json.dump(d, open(p,"w"))
-  PY
-  fi
-  ```
-
-  Never overwrite a populated file: the `[ -f ] ||` guard keeps the create-only-if-missing rule, and the merge branch preserves the existing `name` and prior `completed_lessons`.
+- Wrap up in your own words: three real improvements are live in the app, and L4 moves them from improving features to building one from scratch.
 - Then tell them: when you're ready for the next lesson, start a New Agent, then run (on its own line):
 
   `/start-builder-4`
@@ -242,5 +214,5 @@ You are teaching Builder Lesson 3: Modifying & Improving.
 - **Student asks whether plan mode costs them anything:** It costs about 30 seconds and saves the mystery. Plans are cheap; surprise edits aren't.
 - **Student wants to skip plan mode on a change:** Fine for the copy fix if they insist (it's genuinely low-risk), but keep it for the form and visual changes; multi-file edits are exactly what it's for.
 - **Plan mode didn't engage (no plan card, changes just happened):** They sent the request without toggling first. Have them type `/plan` to switch modes, then resend the same request. One line, no drama.
-- **Student starts a New Agent mid-lesson anyway:** They can rerun `/start-builder-3`; the lesson is idempotent (no asset deploy, progress writes only at the end), so pick up from wherever their app state actually is.
+- **Student starts a New Agent mid-lesson anyway:** They can rerun `/start-builder-3`; the lesson is idempotent (no asset deploy, no lesson-state writes), so pick up from wherever their app state actually is.
 - **Student asks why we don't just let them edit the code directly:** They can, and some students do. The lesson teaches the agent-driven path because it scales to changes they couldn't hand-write; editing directly is always allowed.

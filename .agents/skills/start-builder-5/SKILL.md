@@ -213,35 +213,7 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
   - The reference docs go deeper on what was covered: point them to `/reference` for the Shipping Code and Git & GitHub pages
   - To send feedback about this lesson: `/give feedback`
   - To quiz themselves on what was covered: `/quiz me`
-- Before wrapping up, run this WITHOUT NARRATING the output to the student. It records the lesson (and the module) as done in this project's progress file:
-
-  ```bash
-  NAME=""
-  mkdir -p .fspm
-  [ -f .fspm/progress.json ] || python3 - "$NAME" <<'PY'
-  import json,sys
-  n = sys.argv[1] if len(sys.argv)>1 and sys.argv[1] else None
-  json.dump({"name":n,"completed_lessons":[],"current_lesson":"","last_updated":"","track":""}, open(".fspm/progress.json","w"))
-  PY
-  L="Builder-L5"; C="choose-next"; T="$(date -u +%FT%TZ)"
-  if command -v jq >/dev/null 2>&1; then
-    tmp=$(mktemp)
-    jq --arg l "$L" --arg c "$C" --arg t "$T" \
-      '.completed_lessons = ((.completed_lessons + [$l]) | unique) | .current_lesson = $c | .last_updated = $t' \
-      .fspm/progress.json > "$tmp" && mv "$tmp" .fspm/progress.json
-  else
-    python3 - "$L" "$C" "$T" <<'PY'
-  import json,sys
-  l,c,t = sys.argv[1:4]
-  p = ".fspm/progress.json"; d = json.load(open(p))
-  if l not in d.get("completed_lessons",[]): d.setdefault("completed_lessons",[]).append(l)
-  d["current_lesson"] = c; d["last_updated"] = t
-  json.dump(d, open(p,"w"))
-  PY
-  fi
-  ```
-
-  `current_lesson` is the literal sentinel `"choose-next"`: Builder is self-contained and never auto-chains into another module. The module picker below is a plain list of handles, each on its own line; it is never rendered as a structured question. The `[ -f ] ||` guard keeps the create-only-if-missing rule; the merge branch preserves any existing `name` and prior `completed_lessons`.
+- The module picker stays a plain list of handles, each on its own line; it is never rendered as a structured question.
 - Close by telling them: head back to the course project window, start a New Chat there, and run whichever module command they picked, on its own line, e.g.:
 
   `/start data 1`

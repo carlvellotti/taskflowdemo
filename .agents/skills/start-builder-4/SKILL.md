@@ -168,35 +168,7 @@ You are teaching Builder Lesson 4: Building Features & Variants.
   - The reference docs go deeper on what was covered: point them to `/reference` for the Adding Features page
   - To send feedback about this lesson: `/give feedback`
   - To quiz themselves on what was covered: `/quiz me`
-- Before wrapping up, run this WITHOUT NARRATING the output to the student. It records this lesson as done in the practice repo's progress file (created fresh here if it's somehow missing):
-
-  ```bash
-  NAME=""
-  mkdir -p .fspm
-  [ -f .fspm/progress.json ] || python3 - "$NAME" <<'PY'
-  import json,sys
-  n = sys.argv[1] if len(sys.argv)>1 and sys.argv[1] else None
-  json.dump({"name":n,"completed_lessons":[],"current_lesson":"","last_updated":"","track":""}, open(".fspm/progress.json","w"))
-  PY
-  L="Builder-L4"; C="Builder-L5"; T="$(date -u +%FT%TZ)"
-  if command -v jq >/dev/null 2>&1; then
-    tmp=$(mktemp)
-    jq --arg l "$L" --arg c "$C" --arg t "$T" \
-      '.completed_lessons = ((.completed_lessons + [$l]) | unique) | .current_lesson = $c | .last_updated = $t' \
-      .fspm/progress.json > "$tmp" && mv "$tmp" .fspm/progress.json
-  else
-    python3 - "$L" "$C" "$T" <<'PY'
-  import json,sys
-  l,c,t = sys.argv[1:4]
-  p = ".fspm/progress.json"; d = json.load(open(p))
-  if l not in d.get("completed_lessons",[]): d.setdefault("completed_lessons",[]).append(l)
-  d["current_lesson"] = c; d["last_updated"] = t
-  json.dump(d, open(p,"w"))
-  PY
-  fi
-  ```
-
-  Never overwrite a populated file: the `[ -f ] ||` guard keeps the create-only-if-missing rule, and the merge branch preserves the existing `name` and prior `completed_lessons`.
+- Wrap up in your own words: the dashboard went from spec to working feature in one sitting, and L5 is where the work ships for real.
 - Then tell them: when you're ready for the final Builder lesson, start a New Chat, then run (on its own line):
 
   `/start builder 5`

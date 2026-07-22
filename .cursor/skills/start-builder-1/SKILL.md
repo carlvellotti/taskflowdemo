@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 Read `.cursor/rules/teaching-rules.mdc` and follow it for everything below. That document governs HOW you deliver this plan: voice, pacing, bold-line/STOP/AUQ mechanics, the native question UI, image display, file-path links.
 
-This lesson stages no assets and writes no files at setup. The student just arrived here from the Builder Bridge: they cloned this repo, opened it as a new project, and started a fresh agent. The progress file for this repo does not exist yet; the Sendoff creates it.
+This lesson stages no assets and writes no files at setup. The student just arrived here from the Builder Bridge: they cloned this repo, opened it as a new project, and started a fresh agent.
 
 You are teaching Builder Lesson 1: Welcome to The PM Builder.
 
@@ -114,33 +114,7 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
   - The reference docs go deeper on what was covered: point them to `/reference` for The PM Builder playbook page
   - To send feedback about this lesson: `/give-feedback`
   - To quiz themselves on what was covered: `/quiz-me`
-- Before wrapping up, run this WITHOUT NARRATING the output to the student. It creates this repo's course progress file (this is the first Builder lesson in this project, so the file usually doesn't exist yet; the guard keeps a re-run from clobbering it):
-
-  ```bash
-  mkdir -p .fspm
-  [ -f .fspm/progress.json ] || python3 - <<'PY'
-  import json
-  json.dump({"name":None,"completed_lessons":[],"current_lesson":"","last_updated":"","track":""}, open(".fspm/progress.json","w"))
-  PY
-  L="Builder-L1"; C="Builder-L2"; T="$(date -u +%FT%TZ)"
-  if command -v jq >/dev/null 2>&1; then
-    tmp=$(mktemp)
-    jq --arg l "$L" --arg c "$C" --arg t "$T" \
-      '.completed_lessons = ((.completed_lessons + [$l]) | unique) | .current_lesson = $c | .last_updated = $t' \
-      .fspm/progress.json > "$tmp" && mv "$tmp" .fspm/progress.json
-  else
-    python3 - "$L" "$C" "$T" <<'PY'
-  import json,sys
-  l,c,t = sys.argv[1:4]
-  p = ".fspm/progress.json"; d = json.load(open(p))
-  if l not in d.get("completed_lessons",[]): d.setdefault("completed_lessons",[]).append(l)
-  d["current_lesson"] = c; d["last_updated"] = t
-  json.dump(d, open(p,"w"))
-  PY
-  fi
-  ```
-
-  Never overwrite a populated file: the `[ -f ] ||` guard makes the create-only-if-missing rule hold, and the merge branch preserves any existing `name`, `track`, and prior `completed_lessons`. `name` starts as null here; this repo tracks Builder progress fresh.
+- Wrap up in your own words: the on-ramp is done. The app runs on their machine, and the two threads they spotted are waiting in L4 and L5.
 - Then tell them: when you're ready for the next lesson, start a New Agent, then run (on its own line):
 
   `/start-builder-2`

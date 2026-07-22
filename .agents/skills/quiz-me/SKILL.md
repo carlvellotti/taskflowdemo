@@ -5,7 +5,7 @@ description: |
   the current lesson conversation. Use when the student types /quiz me.
 ---
 
-Read `.fspm/progress.json` to know which lesson the student just completed.
+The current conversation tells you which lesson the student just completed; work from what was actually covered here.
 
 Generate 3-4 quiz questions based on what was covered in the current conversation. Don't pull from the SKILL.md. Use what the student actually experienced.
 
