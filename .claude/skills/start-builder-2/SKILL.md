@@ -209,6 +209,11 @@ You are teaching Builder Lesson 2: Exploring Codebases.
   - To send feedback about this lesson: `/give-feedback`
   - To quiz themselves on what was covered: `/quiz-me`
 - Wrap up in your own words: the whole system is mapped and saved in `docs/`, and L3 is where they start changing the code they've been reading.
+- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+
+  `fspm progress complete builder-2`
+
+  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
 - Then tell them: when you're ready for the next lesson, run `/clear`, then run (on its own line):
 
   `/start-builder-3`

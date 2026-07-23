@@ -219,6 +219,11 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 
 ---
 
+- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+
+  `fspm progress complete builder-5`
+
+  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
 ## Edge Cases
 
 - **The app reports dropping back to Agent mode mid-plan:** Not a failure; the mode can revert after an action completes (observed on-device 2026-07-18). Have the student re-enter Plan Mode with `/plan` and continue where they left off.
