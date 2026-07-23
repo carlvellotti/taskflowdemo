@@ -225,11 +225,13 @@ You are teaching Builder Lesson 5: Git, Safety & Shipping.
 
 ---
 
-- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+- ACTION: Record this lesson as complete by running this WITHOUT NARRATING the raw output:
 
-  `fspm progress complete builder-5`
+```bash
+fspm progress complete builder-5
+```
 
-  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
+  If it fails because the fspm CLI isn't installed, follow the teaching rules' missing-CLI guidance and continue the wrap-up either way.
 ## Edge Cases
 
 - **The restore doesn't bring the file back:** Check `git status` and confirm the commit exists (`git log --oneline -3`). Re-run `git checkout -- client/src/pages/Dashboard.jsx` with the full path. The commit from the Save Your Work beat guarantees the snapshot is there; if the student somehow skipped that beat, commit whatever remains first, restore from the clone's original state with `git checkout main -- client/src/pages/Dashboard.jsx`, and note plainly what happened.

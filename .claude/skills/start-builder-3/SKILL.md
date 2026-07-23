@@ -204,11 +204,13 @@ You are teaching Builder Lesson 3: Modifying & Improving.
   - To send feedback about this lesson: `/give-feedback`
   - To quiz themselves on what was covered: `/quiz-me`
 - Wrap up in your own words: three real improvements are live in the app, and L4 moves them from improving features to building one from scratch.
-- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+- ACTION: Record this lesson as complete by running this WITHOUT NARRATING the raw output:
 
-  `fspm progress complete builder-3`
+```bash
+fspm progress complete builder-3
+```
 
-  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
+  If it fails because the fspm CLI isn't installed, follow the teaching rules' missing-CLI guidance and continue the wrap-up either way.
 - Then tell them: when you're ready for the next lesson, run `/clear`, then run (on its own line):
 
   `/start-builder-4`

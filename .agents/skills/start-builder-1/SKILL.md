@@ -116,11 +116,13 @@ You are teaching Builder Lesson 1: Welcome to The PM Builder.
   - To send feedback about this lesson: `/give feedback`
   - To quiz themselves on what was covered: `/quiz me`
 - Wrap up in your own words: the on-ramp is done. The app runs on their machine, and the two threads they spotted are waiting in L4 and L5.
-- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+- ACTION: Record this lesson as complete by running this WITHOUT NARRATING the raw output:
 
-  `fspm progress complete builder-1`
+```bash
+fspm progress complete builder-1
+```
 
-  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
+  If it fails because the fspm CLI isn't installed, follow the teaching rules' missing-CLI guidance and continue the wrap-up either way.
 - Then tell them: when you're ready for the next lesson, start a New Chat, then run (on its own line):
 
   `/start builder 2`

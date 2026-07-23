@@ -177,11 +177,13 @@ You are teaching Builder Lesson 4: Building Features & Variants.
   - To send feedback about this lesson: `/give-feedback`
   - To quiz themselves on what was covered: `/quiz-me`
 - Wrap up in your own words: the dashboard went from spec to working feature in one sitting, and L5 is where the work ships for real.
-- ACTION: Before wrapping up, record this lesson as complete by running this WITHOUT NARRATING the raw output:
+- ACTION: Record this lesson as complete by running this WITHOUT NARRATING the raw output:
 
-  `fspm progress complete builder-4`
+```bash
+fspm progress complete builder-4
+```
 
-  If it fails because the fspm CLI isn't installed, tell the learner progress tracking needs the FSPM CLI, offer to install it, and continue the wrap-up either way.
+  If it fails because the fspm CLI isn't installed, follow the teaching rules' missing-CLI guidance and continue the wrap-up either way.
 - Then tell them: when you're ready for the final Builder lesson, run `/clear`, then run (on its own line):
 
   `/start-builder-5`
